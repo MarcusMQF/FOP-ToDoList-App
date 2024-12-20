@@ -411,6 +411,17 @@ public class TaskManager {
 
                 Task dependentTask = tasks.get(dependentTaskNum);
                 Task precedingTask = tasks.get(precedingTaskNum);
+
+                if (dependentTask.isComplete()) {
+                    System.out.println("\u001b[31mWARNING:\u001b[0m Cannot set dependency on [" + dependentTask.getTitle() + "] as it is already completed.");
+                    System.out.println();
+                    return;
+                }
+                if (precedingTask.isComplete()) {
+                    System.out.println("\u001b[31mWARNING:\u001b[0m Cannot set dependency on [" + precedingTask.getTitle() + "] as it is already completed.");
+                    System.out.println();
+                    return;
+                }
                 
                 // Check for circular dependency
                 if (wouldCreateCycle(precedingTask, dependentTask)) {
