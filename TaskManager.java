@@ -202,8 +202,8 @@ public class TaskManager {
 
                 // Check dependencies
                 if (task.getDependsOn() != null && !task.getDependsOn().isComplete()) {
-                    System.out.println("\u001b[31mWARNING:\u001b[0m Task \"" + task.getTitle() + 
-                        "\" cannot be marked as complete because it depends on [" + 
+                    System.out.println("\u001b[31mWARNING:\u001b[0m Task [" + task.getTitle() + 
+                        "] cannot be marked as complete because it depends on [" + 
                         task.getDependsOn().getTitle() + "]. Please complete [" + 
                         task.getDependsOn().getTitle() + "] first.");
                     System.out.println();
