@@ -1,6 +1,7 @@
+package com.todoapp;
+
 import java.util.Scanner;
 
-// Main application class
 public class ToDoApp {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -59,7 +60,8 @@ public class ToDoApp {
                         System.out.println("\u001b[32mThank you for using the TODO List App!\u001b[0m");
                         break;
                     default:
-                        System.out.println("\\u001b[31mError:\\u001b[0m Invalid choice. Please choose between 1-9.");
+                        System.out.println("\u001b[31mERROR:\u001b[0m Invalid choice. Please choose between 1-10.");
+                        System.out.println();
                 }
                 if (running) {
                     System.out.print("\nPress Enter to continue...");
@@ -68,14 +70,11 @@ public class ToDoApp {
                 
                 System.out.println();
             } catch (Exception e) {
-                System.out.println("\u001b[31mError:\u001b[0m " + e.getMessage() +". Please choose between 1-9.");
+                System.out.println("\u001b[31mERROR:\u001b[0m " + e.getMessage() + ". Please choose between 1-10.");
                 System.out.println();
-            } // Can use NumberFormatException(non numeric input: abc) of IllegalArgumentException(outside valid range)
+            }
         }
         
         scanner.close();
     }
 }
-
-
-

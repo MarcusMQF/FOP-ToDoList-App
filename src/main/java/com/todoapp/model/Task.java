@@ -1,6 +1,9 @@
+package com.todoapp.model;
+
 import java.time.LocalDate;
 
 public class Task {
+    private Integer id;
     private String title;
     private String description;
     private LocalDate dueDate;
@@ -96,5 +99,13 @@ public class Task {
     
     public void setRecurringInterval(String recurringInterval) {
         this.recurringInterval = recurringInterval;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
