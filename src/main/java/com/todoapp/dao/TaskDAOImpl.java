@@ -135,6 +135,20 @@ public class TaskDAOImpl implements TaskDAO {
         }
     }
 
+    @Override
+    public void removeCompletedDependency(int taskId, int completedDependencyId) throws SQLException {
+        String sql = "DELETE FROM task_dependencies WHERE task_id = ? AND depends_on_task_id = ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, taskId);
+            pstmt.setInt(2, completedDependencyId);
+            
+            pstmt.executeUpdate();
+        }
+    }
+
     private Task mapResultSetToTask(ResultSet rs) throws SQLException {
         Task task = new Task(
             rs.getString("title"),

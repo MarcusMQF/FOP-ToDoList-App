@@ -260,6 +260,8 @@ public class TaskManager {
                     task.setComplete(true);
                     taskDAO.update(task);
                     
+                    cleanupDependenciesForCompletedTask(task);
+                    
                     System.out.println("\n\u001b[32mTask [" + task.getTitle() + "] marked as completed!\u001b[0m");
                     
                     if (task.isRecurring()) {
@@ -584,36 +586,12 @@ public class TaskManager {
                                 }
                                 break;
                             case 6:
-                                // Display the tasks for dependency
-                                System.out.println("\n\u001B[31m=== Set Task Dependency ===\u001B[0m");
-                                displayTasks();
-
-                                System.out.print("\nEnter the task number it depends on: ");
-                                int precedingTaskNum = Integer.parseInt(scanner.nextLine().trim());
-                                
-                                if (precedingTaskNum < 1 || precedingTaskNum > tasks.size()) {
-                                    System.out.println("\u001b[31mERROR:\u001b[0m Invalid task number.");
-                                    continue;
+                                System.out.println();
+                                boolean dependencySet = handleSetDependencyInEdit(scanner, task, tasks);
+                                if (!dependencySet) {
+                                    return; // Return without showing "Task updated successfully"
                                 }
-
-                                Task precedingTask = tasks.get(precedingTaskNum - 1);
-
-                                if (task.getId() == precedingTask.getId()) {
-                                    System.out.println("\u001b[31mERROR:\u001b[0m A task cannot depend on itself.");
-                                    return;
-                                }
-
-                                // Check for circular dependency
-                                if (wouldCreateCycle(precedingTask, task, tasks)) {
-                                    System.out.println("\u001b[31mERROR:\u001b[0m This would create a circular dependency!");
-                                    return;
-                                }
-
-                                task.addDependency(precedingTask);
-                                taskDAO.setTaskDependency(task.getId(), precedingTask.getId());
-                                System.out.printf("\n\u001b[32mTask [%s] now depends on [%s].\u001b[0m\n", 
-                                    task.getTitle(), precedingTask.getTitle());
-                                return;
+                                break;
                             case 7:
                                 return; // Exit if canceling
                         }
@@ -688,38 +666,57 @@ public class TaskManager {
         }
     }
 
-    private boolean wouldCreateCycle(Task start, Task newDependency, List<Task> allTasks) throws SQLException {
+    private boolean wouldCreateCycle(Task precedingTask, Task dependentTask, List<Task> allTasks) throws SQLException {
         // First check for direct cycle
-        if (start.getId() == newDependency.getId()) {
+        if (precedingTask.getId() == dependentTask.getId()) {
             return true;
         }
 
-        // Set to keep track of all visited task IDs in the current path
-        Set<Integer> pathVisited = new HashSet<>();
-        return checkForCycle(start, newDependency.getId(), pathVisited);
-    }
-
-    private boolean checkForCycle(Task current, int targetId, Set<Integer> pathVisited) {
-        // If we find the target ID in our path, we have a cycle
-        if (current.getId() == targetId) {
-            return true;
+        // Create a map to simulate the dependency chain including the new dependency
+        Map<Integer, List<Task>> dependencyGraph = new HashMap<>();
+        
+        // Build dependency graph for all tasks
+        for (Task task : allTasks) {
+            dependencyGraph.put(task.getId(), new ArrayList<>(task.getDependencies()));
         }
-
-        // If we've already visited this node in current path, skip it
-        if (!pathVisited.add(current.getId())) {
-            return false;
+        
+        // Add the proposed new dependency to the graph
+        if (!dependencyGraph.containsKey(dependentTask.getId())) {
+            dependencyGraph.put(dependentTask.getId(), new ArrayList<>());
         }
+        dependencyGraph.get(dependentTask.getId()).add(precedingTask);
 
-        // Check all dependencies recursively
-        for (Task dependency : current.getDependencies()) {
-            if (checkForCycle(dependency, targetId, pathVisited)) {
+        // Start from the preceding task
+        Task tortoise = precedingTask;
+        Task hare = precedingTask;
+        
+        while (true) {
+            // Move tortoise one step
+            List<Task> tortoiseDeps = dependencyGraph.get(tortoise.getId());
+            if (tortoiseDeps.isEmpty()) {
+                return false; // No cycle found - reached end of chain
+            }
+            tortoise = tortoiseDeps.get(0);
+            
+            // Move hare two steps
+            for (int i = 0; i < 2; i++) {
+                List<Task> hareDeps = dependencyGraph.get(hare.getId());
+                if (hareDeps.isEmpty()) {
+                    return false; // No cycle found - reached end of chain
+                }
+                hare = hareDeps.get(0);
+                
+                // Check if we've found the dependent task in the chain
+                if (hare.getId() == dependentTask.getId()) {
+                    return true; // Found a cycle
+                }
+            }
+            
+            // If tortoise meets hare, we found a cycle
+            if (tortoise.getId() == hare.getId()) {
                 return true;
             }
         }
-
-        // Remove current node from path as we backtrack
-        pathVisited.remove(current.getId());
-        return false;
     }
 
     public void setTaskDependency(Scanner scanner) {
@@ -752,6 +749,11 @@ public class TaskManager {
 
                     Task dependentTask = tasks.get(dependentTaskNum - 1);
                     
+                    // Validate dependent task first
+                    if (!validateDependentTask(dependentTask)) {
+                        return;
+                    }
+                    
                     System.out.print("Enter the task number it depends on: ");
                     int precedingTaskNum = Integer.parseInt(scanner.nextLine().trim());
                     
@@ -761,6 +763,11 @@ public class TaskManager {
                     }
 
                     Task precedingTask = tasks.get(precedingTaskNum - 1);
+
+                    // Validate depends-on task
+                    if (!validateDependsOnTask(precedingTask)) {
+                        return;
+                    }
 
                     if (dependentTaskNum == precedingTaskNum) {
                         System.out.println("\u001b[31mERROR:\u001b[0m A task cannot depend on itself.");
@@ -810,19 +817,118 @@ public class TaskManager {
     }
 
     private String formatDependencies(Task task) {
-        List<String> incompleteDependencies = task.getDependencies().stream()
-            .filter(t -> !t.isComplete())
-            .map(Task::getTitle)
-            .collect(Collectors.toList());
+        if (task.getDependencies().isEmpty()) {
+            return "";
+        }
         
-        // Only return the dependency text if there are incomplete dependencies
-        return incompleteDependencies.isEmpty() ? "" 
-            : " | Depends on: " + String.join(", ", incompleteDependencies);
+        // Show all dependencies regardless of completion status
+        return " | Depends on: " + task.getDependencies().stream()
+            .map(Task::getTitle)
+            .collect(Collectors.joining(", "));
     }
 
     private boolean hasExistingDependency(Task task, Task dependency) {
         return task.getDependencies().stream()
             .filter(t -> !t.isComplete())
             .anyMatch(t -> t.getId() == dependency.getId());
+    }
+
+    private boolean handleSetDependencyInEdit(Scanner scanner, Task task, List<Task> allTasks) throws SQLException {
+        System.out.println("\u001B[31m=== Set Task Dependency ===\u001B[0m");
+        displayTasks();
+        
+        // Validate dependent task first
+        if (!validateDependentTask(task)) {
+            return false;
+        }
+        
+        System.out.print("\nEnter the task number it depends on: ");
+        int precedingTaskNum = Integer.parseInt(scanner.nextLine().trim());
+        
+        if (precedingTaskNum < 1 || precedingTaskNum > allTasks.size()) {
+            System.out.println("\u001b[31mERROR:\u001b[0m Invalid task number.");
+            return false;
+        }
+
+        Task precedingTask = allTasks.get(precedingTaskNum - 1);
+
+        // Validate depends-on task
+        if (!validateDependsOnTask(precedingTask)) {
+            return false;
+        }
+
+        if (task.getId() == precedingTask.getId()) {
+            System.out.println("\u001b[31mERROR:\u001b[0m A task cannot depend on itself.");
+            return false;
+        }
+
+        // Check for existing dependency
+        if (hasExistingDependency(task, precedingTask)) {
+            System.out.println("\u001b[33mWARNING:\u001b[0m Task [" + task.getTitle() + 
+                "] already depends on [" + precedingTask.getTitle() + "]!");
+            return false;
+        }
+
+        // Check for circular dependency
+        if (wouldCreateCycle(precedingTask, task, allTasks)) {
+            System.out.println("\u001b[31mERROR:\u001b[0m This would create a circular dependency!");
+            return false;
+        }
+
+        try {
+            task.addDependency(precedingTask);
+            taskDAO.setTaskDependency(task.getId(), precedingTask.getId());
+            
+            String dependencyList = task.getDependencies().stream()
+                .map(Task::getTitle)
+                .collect(Collectors.joining(", "));
+            System.out.printf("\n\u001b[32mTask [%s] now depends on: %s\u001b[0m\n", 
+                task.getTitle(), dependencyList);
+            return true;
+        } catch (SQLException e) {
+            if (e.getMessage().contains("UNIQUE constraint failed")) {
+                System.out.println("\u001b[31mWARNING:\u001b[0m Task [" + task.getTitle() + 
+                    "] already depends on [" + precedingTask.getTitle() + "]!");
+            } else {
+                throw e;
+            }
+            return false;
+        }
+    }
+
+    private void cleanupDependenciesForCompletedTask(Task completedTask) throws SQLException {
+        // Get all tasks that might depend on the completed task
+        List<Task> allTasks = taskDAO.getAllByUserId(currentUserId);
+        
+        for (Task task : allTasks) {
+            // Check if this task depends on the completed task
+            for (Task dependency : task.getDependencies()) {
+                if (dependency.getId() == completedTask.getId()) {
+                    // Remove the completed dependency from database
+                    taskDAO.removeCompletedDependency(task.getId(), completedTask.getId());
+                    // Remove from memory
+                    task.getDependencies().remove(dependency);
+                    break;
+                }
+            }
+        }
+    }
+
+    private boolean validateDependentTask(Task task) {
+        if (task.isComplete()) {
+            System.out.println("\u001b[31mWARNING:\u001b[0m Cannot set task [" + task.getTitle() + 
+                "] as dependent since it is already completed.");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateDependsOnTask(Task task) {
+        if (task.isComplete()) {
+            System.out.println("\u001b[31mWARNING:\u001b[0m Cannot set dependency on [" + task.getTitle() + 
+                "] as it is already completed.");
+            return false;
+        }
+        return true;
     }
 }

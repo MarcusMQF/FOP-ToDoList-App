@@ -11,4 +11,5 @@ public interface TaskDAO {
     void update(Task task) throws SQLException;
     void delete(int id) throws SQLException;
     void setTaskDependency(int taskId, int dependsOnTaskId) throws SQLException;
+    void removeCompletedDependency(int taskId, int completedDependencyId) throws SQLException;
 }
