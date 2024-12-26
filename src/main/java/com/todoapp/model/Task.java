@@ -1,6 +1,8 @@
 package com.todoapp.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Task {
     private Integer id;
@@ -10,7 +12,7 @@ public class Task {
     private boolean isComplete;
     private String category;
     private String priority;
-    private Task dependsOn;
+    private List<Task> dependencies;
     private boolean isRecurring;
     private String recurringInterval;
     
@@ -22,7 +24,7 @@ public class Task {
         this.isComplete = false;
         this.category = category;
         this.priority = priority;
-        this.dependsOn = null;
+        this.dependencies = new ArrayList<>();
         this.isRecurring = isRecurring;
         this.recurringInterval = recurringInterval;
     }
@@ -52,8 +54,8 @@ public class Task {
         return priority;
     }
     
-    public Task getDependsOn() {
-        return dependsOn;
+    public List<Task> getDependencies() {
+        return dependencies;
     }
     
     public boolean isRecurring() {
@@ -89,8 +91,10 @@ public class Task {
         this.priority = priority;
     }
     
-    public void setDependsOn(Task dependsOn) {
-        this.dependsOn = dependsOn;
+    public void addDependency(Task task) {
+        if (!dependencies.contains(task)) {
+            dependencies.add(task);
+        }
     }
     
     public void setRecurring(boolean recurring) {

@@ -106,7 +106,7 @@ public class TaskManager {
                priority = capitalize(priority);
                break;
             }
-            System.out.println("\u001b[31mError:\u001b[0m Invalid Priority! Please choose High, Medium or Low.");
+            System.out.println("\u001b[31mERROR:\u001b[0m Invalid Priority! Please choose High, Medium or Low.");
             System.out.println();
         }
         
@@ -185,7 +185,7 @@ public class TaskManager {
                     task.getDueDate(),
                     task.getCategory(),
                     task.getPriority(),
-                    task.getDependsOn() != null ? " | Depends on: " + task.getDependsOn().getTitle() : "");
+                    formatDependencies(task));
             }
         } catch (SQLException e) {
             System.out.println("\u001b[31mERROR:\u001b[0m Database error: " + e.getMessage());
@@ -212,7 +212,7 @@ public class TaskManager {
                     task.getDueDate(),
                     task.getCategory(),
                     task.getPriority(),
-                    task.getDependsOn() != null ? " | Depends on: " + task.getDependsOn().getTitle() : "");
+                    formatDependencies(task));
             }
 
             System.out.println("\nThe total number of tasks created is " + tasks.size() + ".");
@@ -247,11 +247,13 @@ public class TaskManager {
                     Task task = tasks.get(taskNum - 1);
                     
                     // Check if the task's dependency is completed
-                    if (task.getDependsOn() != null && !task.getDependsOn().isComplete()) {
+                    if (task.getDependencies().stream().anyMatch(t -> !t.isComplete())) {
                         System.out.println("\u001b[31mWARNING:\u001b[0m Task [" + task.getTitle() + 
                             "] cannot be marked as complete because it depends on [" + 
-                            task.getDependsOn().getTitle() + "]. Please complete [" + 
-                            task.getDependsOn().getTitle() + "] first.");
+                            task.getDependencies().stream()
+                                .filter(t -> !t.isComplete())
+                                .map(Task::getTitle)
+                                .collect(Collectors.joining(", ")) + "]. Please complete them first.");
                         return;
                     }
                     
@@ -422,7 +424,7 @@ public class TaskManager {
                 task.getDueDate(),
                 task.getCategory(),
                 task.getPriority(),
-                task.getDependsOn() != null ? " | Depends on: " + task.getDependsOn().getTitle() : "");
+                formatDependencies(task));
         }
         System.out.println();
     }
@@ -457,7 +459,7 @@ public class TaskManager {
                     task.getDueDate(),
                     task.getCategory(),
                     task.getPriority(),
-                    task.getDependsOn() != null ? " | Depends on: " + task.getDependsOn().getTitle() : "");
+                    formatDependencies(task));
                 System.out.println();
             }
         } catch (SQLException e) {
@@ -607,7 +609,7 @@ public class TaskManager {
                                     return;
                                 }
 
-                                task.setDependsOn(precedingTask);
+                                task.addDependency(precedingTask);
                                 taskDAO.setTaskDependency(task.getId(), precedingTask.getId());
                                 System.out.printf("\n\u001b[32mTask [%s] now depends on [%s].\u001b[0m\n", 
                                     task.getTitle(), precedingTask.getTitle());
@@ -669,8 +671,11 @@ public class TaskManager {
                 if (task.isRecurring()) {
                     System.out.println("Recurring Interval: " + task.getRecurringInterval());
                 }
-                if (task.getDependsOn() != null) {
-                    System.out.println("Depends on: " + task.getDependsOn().getTitle());
+                if (task.getDependencies().stream().anyMatch(t -> !t.isComplete())) {
+                    System.out.println("Depends on: " + task.getDependencies().stream()
+                        .filter(t -> !t.isComplete())
+                        .map(Task::getTitle)
+                        .collect(Collectors.joining(", ")));
                 }
                 break;
                 
@@ -684,19 +689,36 @@ public class TaskManager {
     }
 
     private boolean wouldCreateCycle(Task start, Task newDependency, List<Task> allTasks) throws SQLException {
-        Set<Integer> visited = new HashSet<>();
-        Task current = start;
-        
-        while (current != null) {
-            if (!visited.add(current.getId())) {
-                return true; // Found a cycle
-            }
-            if (current.getId() == newDependency.getId()) {
-                return true; // Would create a cycle
-            }
-            // Get the next task in the chain
-            current = current.getDependsOn();
+        // First check for direct cycle
+        if (start.getId() == newDependency.getId()) {
+            return true;
         }
+
+        // Set to keep track of all visited task IDs in the current path
+        Set<Integer> pathVisited = new HashSet<>();
+        return checkForCycle(start, newDependency.getId(), pathVisited);
+    }
+
+    private boolean checkForCycle(Task current, int targetId, Set<Integer> pathVisited) {
+        // If we find the target ID in our path, we have a cycle
+        if (current.getId() == targetId) {
+            return true;
+        }
+
+        // If we've already visited this node in current path, skip it
+        if (!pathVisited.add(current.getId())) {
+            return false;
+        }
+
+        // Check all dependencies recursively
+        for (Task dependency : current.getDependencies()) {
+            if (checkForCycle(dependency, targetId, pathVisited)) {
+                return true;
+            }
+        }
+
+        // Remove current node from path as we backtrack
+        pathVisited.remove(current.getId());
         return false;
     }
 
@@ -745,18 +767,38 @@ public class TaskManager {
                         return;
                     }
 
-                    // Check for circular dependency
+                    // Check for existing dependency
+                    if (hasExistingDependency(dependentTask, precedingTask)) {
+                        System.out.println("\u001b[31mWARNING:\u001b[0m Task [" + dependentTask.getTitle() + 
+                            "] already depends on [" + precedingTask.getTitle() + "]!");
+                        return;
+                    }
+
+                    // Check for circular dependency (both direct and indirect)
                     if (wouldCreateCycle(precedingTask, dependentTask, tasks)) {
                         System.out.println("\u001b[31mERROR:\u001b[0m This would create a circular dependency!");
                         return;
                     }
 
-                    dependentTask.setDependsOn(precedingTask);
-                    taskDAO.setTaskDependency(dependentTask.getId(), precedingTask.getId());
-                    
-                    System.out.printf("\n\u001b[32mTask [%s] now depends on [%s].\u001b[0m\n", 
-                        dependentTask.getTitle(), precedingTask.getTitle());
-                    break;
+                    try {
+                        dependentTask.addDependency(precedingTask);
+                        taskDAO.setTaskDependency(dependentTask.getId(), precedingTask.getId());
+                        
+                        String dependencyList = dependentTask.getDependencies().stream()
+                            .map(Task::getTitle)
+                            .collect(Collectors.joining(", "));
+                        System.out.printf("\n\u001b[32mTask [%s] now depends on: %s\u001b[0m\n", 
+                            dependentTask.getTitle(), dependencyList);
+                        break;
+                    } catch (SQLException e) {
+                        if (e.getMessage().contains("UNIQUE constraint failed")) {
+                            System.out.println("\u001b[31mWARNING:\u001b[0m Task [" + dependentTask.getTitle() + 
+                                "] already depends on [" + precedingTask.getTitle() + "]!");
+                        } else {
+                            throw e;
+                        }
+                        return;
+                    }
 
                 } catch (NumberFormatException e) {
                     System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid number.");
@@ -765,5 +807,22 @@ public class TaskManager {
         } catch (SQLException e) {
             System.out.println("\u001b[31mERROR:\u001b[0m Database error: " + e.getMessage());
         }
+    }
+
+    private String formatDependencies(Task task) {
+        List<String> incompleteDependencies = task.getDependencies().stream()
+            .filter(t -> !t.isComplete())
+            .map(Task::getTitle)
+            .collect(Collectors.toList());
+        
+        // Only return the dependency text if there are incomplete dependencies
+        return incompleteDependencies.isEmpty() ? "" 
+            : " | Depends on: " + String.join(", ", incompleteDependencies);
+    }
+
+    private boolean hasExistingDependency(Task task, Task dependency) {
+        return task.getDependencies().stream()
+            .filter(t -> !t.isComplete())
+            .anyMatch(t -> t.getId() == dependency.getId());
     }
 }

@@ -148,14 +148,14 @@ public class TaskDAOImpl implements TaskDAO {
         task.setId(rs.getInt("id"));
         task.setComplete(rs.getBoolean("is_complete"));
         
-        // Load dependency information
+        // Load all dependencies
         try (PreparedStatement depStmt = rs.getStatement().getConnection()
                 .prepareStatement("SELECT t.* FROM tasks t " +
                                 "JOIN task_dependencies td ON t.id = td.depends_on_task_id " +
                                 "WHERE td.task_id = ?")) {
             depStmt.setInt(1, task.getId());
             ResultSet depRs = depStmt.executeQuery();
-            if (depRs.next()) {
+            while (depRs.next()) {  // Changed from if to while to get all dependencies
                 Task dependsOn = new Task(
                     depRs.getString("title"),
                     depRs.getString("description"),
@@ -167,7 +167,7 @@ public class TaskDAOImpl implements TaskDAO {
                 );
                 dependsOn.setId(depRs.getInt("id"));
                 dependsOn.setComplete(depRs.getBoolean("is_complete"));
-                task.setDependsOn(dependsOn);
+                task.addDependency(dependsOn);
             }
         }
         
