@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch ToDo App",
+            "request": "launch",
+            "mainClass": "com.todoapp.ToDoApp",
+            "projectName": "todo-app",
+            "vmArgs": "--module-path \"C:/Users/User/Documents/Visual Studio Code/Java ToDo Application (FOP)/lib\" --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}",
+            "vmArgs": "--module-path \"C:/Users/User/Documents/Visual Studio Code/Java ToDo Application (FOP)/lib\" --add-modules javafx.controls,javafx.fxml"
+        }
+    ]
+}

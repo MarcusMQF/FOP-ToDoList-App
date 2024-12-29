@@ -1,13 +1,67 @@
 package com.todoapp;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import java.util.Scanner;
 
-public class ToDoApp {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        TaskManager taskManager = new TaskManager();
-        boolean running = true;
+public class ToDoApp extends Application {
+    private static boolean guiCompleted = false;
+    private static Scanner scanner = new Scanner(System.in);
+    private static TaskManager taskManager = new TaskManager();
+    private static volatile boolean applicationRunning = true;
 
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+        
+        primaryStage.setTitle("ToDo List App - Register");
+        primaryStage.setScene(scene);
+        
+        // Create a separate thread for the terminal app
+        Thread terminalThread = new Thread(() -> {
+            while (applicationRunning) {
+                if (guiCompleted) {
+                    startTerminalApp();
+                    break;
+                }
+                try {
+                    Thread.sleep(100); // Small delay to prevent CPU overuse
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        });
+        terminalThread.setDaemon(false);
+        terminalThread.start();
+        
+        primaryStage.setOnCloseRequest(event -> {
+            if (!guiCompleted) {
+                applicationRunning = false;
+                Platform.exit();
+            }
+        });
+        
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
+    public static void setGuiCompleted(boolean completed) {
+        guiCompleted = completed;
+    }
+    
+    private void startTerminalApp() {
+        boolean running = true;
         while (running) {
             System.out.println("\n\u001B[33m[JAVA TODO LIST APP (OOP)]\u001B[0m");
             System.out.println();

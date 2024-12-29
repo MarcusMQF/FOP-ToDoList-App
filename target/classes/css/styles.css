@@ -1,0 +1,29 @@
+.login-container, .register-container {
+    -fx-background-color: white;
+    -fx-min-width: 400px;
+    -fx-min-height: 500px;
+}
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.input-field {
+    -fx-pref-width: 300px;
+    -fx-pref-height: 40px;
+    -fx-font-size: 14px;
+}
+
+.login-button, .register-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 40px;
+    -fx-font-size: 14px;
+}
+
+.error-label {
+    -fx-text-fill: red;
+    -fx-font-size: 12px;
+} 

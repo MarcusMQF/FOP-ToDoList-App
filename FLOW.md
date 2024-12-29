@@ -49,11 +49,26 @@
   - [ ] User feedback (alerts/notifications)
   - [ ] Error messages
 
-## 4. Testing & Polish ✨
+## 4. Email Notification System Implementation 📧
+- [ ] Create User Email Configuration
+  - [ ] Allow users to input their email addresses during registration or in settings
+- [ ] Implement Task Reminder Service
+  - [ ] Create TaskReminderService class to check for tasks due within 24 hours
+  - [ ] Implement logic to send email reminders
+- [ ] Set Up Email Sending Functionality
+  - [ ] Use JavaMail or an email API to send emails
+  - [ ] Create EmailService class to handle email sending
+- [ ] Schedule Email Notifications
+  - [ ] Use ScheduledExecutorService to run the reminder check periodically (e.g., every hour)
+- [ ] Integrate Email Notification with Main Application
+  - [ ] Start the email notification service after user logs in successfully
+
+## 5. Testing & Polish ✨
 - [ ] Test all features
   - [ ] User authentication
   - [ ] Task management
   - [ ] Database operations
+  - [ ] Email notifications
 - [ ] Add final UI touches
   - [ ] Icons and images
   - [ ] Loading animations
@@ -66,5 +81,6 @@
 3. Implement authentication
 4. Create main interface GUI
 5. Connect task management functionality
-6. Add styling and polish
-7. Final testing and refinement
+6. Implement email notification system
+7. Add styling and polish
+8. Final testing and refinement
