@@ -120,9 +120,8 @@ The **Java Todo App** is a desktop application built using **JavaFX** and **SQLi
   - Open pull request on GitHub
   - Provide clear description of changes
 
----
 
-### Next Steps for Teammates 🚧
+### Next Steps 🚧
 
 1. **Design the GUI**:
    - Use **FXML** for layout design:
@@ -142,12 +141,6 @@ The **Java Todo App** is a desktop application built using **JavaFX** and **SQLi
      - Database operations
      - User interactions
 
-### Notes 📌
-
-- **JavaFX 17.0.13**: The project is already configured to use JavaFX 17.0.13. No additional download is required.
-- **Database**: The SQLite database (`todo.db`) is included in the project. Ensure it is correctly set up before running the app.
-
----
 
 ## Contributors 🧑‍🚀
 
