@@ -1,10 +1,8 @@
-# Java Todo App 🚀
+# ToDo List App with Java 🚀
 
 ## Description 📝
 
 The **Java Todo App** is a desktop application built using **JavaFX** and **SQLite**. It allows users to manage their tasks effectively with a user-friendly graphical interface. The app includes features like user registration, login, task creation, task management, and more.
-
----
 
 ## Table of Contents 📑
 
@@ -15,8 +13,6 @@ The **Java Todo App** is a desktop application built using **JavaFX** and **SQLi
 5. [Contribution Guidelines](#contribution-guidelines-)
 6. [Contributors](#contributors-)
 7. [License](#license-)
-
----
 
 ## Features ✅
 
@@ -46,15 +42,11 @@ The **Java Todo App** is a desktop application built using **JavaFX** and **SQLi
   - User data
   - Task data
 
----
-
 ## Technology Stack 💻
 
 - **JavaFX 17.0.13**: For the graphical user interface (GUI).
 - **SQLite**: For database storage.
 - **FXML**: For defining the UI layout.
-
----
 
 ## Setup Instructions 🛠️
 
@@ -77,8 +69,6 @@ The **Java Todo App** is a desktop application built using **JavaFX** and **SQLi
    ```
 3. Open project in Vs Code
 
----
-
 ## Running the Application ▶️
 
 ### **Set Up the Database**
@@ -98,8 +88,6 @@ The **Java Todo App** is a desktop application built using **JavaFX** and **SQLi
    - Press F5 
    - OR: Click Run > Start Debugging
 3. Login/Register window will appear to access main application
-
----
 
 ## Contribution Guidelines 📜
 
@@ -169,8 +157,6 @@ The **Java Todo App** is a desktop application built using **JavaFX** and **SQLi
 * SAJEEV A/L JAYAPARAGASAM
 * VERONICA YAPP YEE HONG
 * JASMINE TEO GIE MING
-
----
 
 ## License
 
