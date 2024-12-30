@@ -4,44 +4,6 @@
 
 The **Java Todo App** is a desktop application built using **JavaFX** and **SQLite**. It allows users to manage their tasks effectively with a user-friendly graphical interface. The app includes features like user registration, login, task creation, task management, and more.
 
-## Table of Contents 📑
-
-1. [Features](#features-)
-2. [Technology Stack](#technology-stack-)
-3. [Setup Instructions](#setup-instructions-)
-4. [Running the Application](#running-the-application-)
-5. [Contribution Guidelines](#contribution-guidelines-)
-6. [Contributors](#contributors-)
-7. [License](#license-)
-
-## Features ✅
-
-### **User Authentication**
-- Register new users.
-- Login with existing credentials.
-
-### **Task Management**
-- Add new tasks with:
-  - Title
-  - Description
-  - Due date
-  - Category
-  - Priority
-- Mark tasks as complete.
-- Delete tasks.
-- Sort tasks by:
-  - Due date
-  - Priority
-- Search for tasks by:
-  - Title
-  - Description
-- Set dependencies between tasks.
-
-### **Database Integration**
-- Uses **SQLite** to store:
-  - User data
-  - Task data
-
 ## Technology Stack 💻
 
 - **JavaFX 17.0.13**: For the graphical user interface (GUI).
@@ -119,28 +81,6 @@ The **Java Todo App** is a desktop application built using **JavaFX** and **SQLi
 6. Submit a Pull Request
   - Open pull request on GitHub
   - Provide clear description of changes
-
-
-### Next Steps 🚧
-
-1. **Design the GUI**:
-   - Use **FXML** for layout design:
-     - Task list view
-     - Task creation form
-     - Task management controls
-
-2. **Integrate with the Database**:
-   - Ensure the GUI interacts with the SQLite database to:
-     - Fetch task data
-     - Update task information
-     - Handle user operations
-
-3. **Test the Application**:
-   - Perform thorough testing to ensure:
-     - GUI functionality
-     - Database operations
-     - User interactions
-
 
 ## Contributors 🧑‍🚀
 
