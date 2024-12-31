@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
+import com.todoapp.model.User;
 
 public class LoginController {
     @FXML private TextField usernameField;
@@ -34,7 +35,8 @@ public class LoginController {
         }
         
         try {
-            authService.login(username, password);
+            User user = authService.login(username, password);
+            ToDoApp.initializeTaskManager(user.getId());
             ToDoApp.setGuiCompleted(true);
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.close();

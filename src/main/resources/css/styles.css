@@ -1,29 +1,195 @@
-.login-container, .register-container {
+.main-container {
     -fx-background-color: white;
-    -fx-min-width: 400px;
-    -fx-min-height: 500px;
+    -fx-min-width: 900px;
+    -fx-min-height: 600px;
 }
 
-.title-label {
-    -fx-font-size: 24px;
+.left-panel {
+    -fx-background-color: linear-gradient(to bottom right, #1A2980, #26D0CE);
+    -fx-padding: 40px;
+    -fx-min-width: 400px;
+    -fx-alignment: center;
+}
+
+.right-panel {
+    -fx-background-color: white;
+    -fx-padding: 40px;
+    -fx-alignment: center;
+    -fx-spacing: 20;
+}
+
+.app-title-container {
+    -fx-padding: 0 0 100 0;
+}
+
+.app-title {
+    -fx-font-size: 28px;
     -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.left-content {
+    -fx-spacing: 30px;
+    -fx-alignment: center;
+    -fx-max-height: 500px;
+}
+
+.info-text {
+    -fx-font-size: 24px;
+    -fx-fill: white;
+    -fx-text-alignment: center;
+}
+
+.info-subtext {
+    -fx-font-size: 16px;
+    -fx-fill: white;
+    -fx-opacity: 0.9;
+    -fx-text-alignment: center;
+}
+
+.welcome-text {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-fill: #2c3e50;
+}
+
+.form-container {
+    -fx-spacing: 15;
+    -fx-max-width: 400px;
+    -fx-alignment: center;
+    -fx-padding: 25 0 0 0;
 }
 
 .input-field {
     -fx-pref-width: 300px;
-    -fx-pref-height: 40px;
+    -fx-min-width: 300px;
+    -fx-max-width: 300px;
+    -fx-pref-height: 45px;
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px;
     -fx-font-size: 14px;
+    -fx-transition: all 0.3s ease-in-out;
 }
 
-.login-button, .register-button {
-    -fx-background-color: #4CAF50;
+.input-field:focused {
+    -fx-border-color: #4568dc;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(69,104,220,0.2), 8, 0, 0, 0);
+}
+
+.primary-button {
+    -fx-background-color: #4568dc;
     -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-pref-width: 300px;
+    -fx-min-width: 300px;
+    -fx-max-width: 300px;
+    -fx-pref-height: 45px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.primary-button:hover {
+    -fx-background-color: #3557cb;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 0);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+    -fx-border-width: 2px;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
     -fx-pref-width: 200px;
-    -fx-pref-height: 40px;
-    -fx-font-size: 14px;
+    -fx-pref-height: 45px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.login-link-container {
+    -fx-spacing: 5;
+    -fx-padding: 10 0 0 0;
+}
+
+.link-button {
+    -fx-text-fill: #4568dc;
+    -fx-font-weight: bold;
+    -fx-border-width: 0;
 }
 
 .error-label {
-    -fx-text-fill: red;
-    -fx-font-size: 12px;
-} 
+    -fx-text-fill: #e74c3c;
+    -fx-font-size: 13px;
+}
+
+.app-logo {
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.6), 15, 0, 0, 0);
+}
+
+.brand-container {
+    -fx-spacing: 8px;
+}
+
+.brand-title {
+    -fx-fill: white;
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+}
+
+.brand-slogan {
+    -fx-fill: rgba(255,255,255,0.9);
+    -fx-font-size: 16px;
+}
+
+.feature-list {
+    -fx-padding: 10px 0;
+    -fx-max-width: 350px;
+}
+
+.feature-item {
+    -fx-spacing: 16px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 8px 16px;
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-background-radius: 12px;
+    -fx-min-height: 50px;
+    -fx-max-width: 350px;
+}
+
+.feature-icon-container {
+    -fx-min-width: 36px;
+    -fx-min-height: 36px;
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.6), 10, 0, 0, 0);
+}
+
+.feature-text {
+    -fx-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.feature-item:hover {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 0);
+    -fx-cursor: hand;
+}
+
+.logo-container {
+    -fx-spacing: 16px;
+    -fx-padding: 0 0 10px 0;
+}
+
+.left-panel-login {
+    -fx-min-width: 450px;
+    -fx-max-width: 450px;
+    -fx-alignment: center;
+}

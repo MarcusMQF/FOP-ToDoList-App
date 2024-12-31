@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class ToDoApp extends Application {
     private static boolean guiCompleted = false;
     private static Scanner scanner = new Scanner(System.in);
-    private static TaskManager taskManager = new TaskManager();
+    private static TaskManager taskManager;
     private static volatile boolean applicationRunning = true;
 
     @Override
@@ -130,5 +130,9 @@ public class ToDoApp extends Application {
         }
         
         scanner.close();
+    }
+
+    public static void initializeTaskManager(int userId) {
+        taskManager = new TaskManager(userId);
     }
 }

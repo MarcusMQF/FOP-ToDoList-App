@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDAOImpl implements TaskDAO {
+    private final int currentUserId;
+    
+    public TaskDAOImpl(int userId) {
+        this.currentUserId = userId;
+    }
+
     @Override
     public Task create(Task task, int userId) throws SQLException {
         String sql = "INSERT INTO tasks (user_id, title, description, due_date, category, priority, is_recurring, recurring_interval) " +
@@ -44,12 +50,13 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public Task getById(int id) throws SQLException {
-        String sql = "SELECT * FROM tasks WHERE id = ?";
+        String sql = "SELECT * FROM tasks WHERE id = ? AND user_id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, id);
+            pstmt.setInt(2, currentUserId);
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -83,7 +90,7 @@ public class TaskDAOImpl implements TaskDAO {
     public void update(Task task) throws SQLException {
         String sql = "UPDATE tasks SET title = ?, description = ?, due_date = ?, " +
                     "is_complete = ?, category = ?, priority = ?, is_recurring = ?, " +
-                    "recurring_interval = ? WHERE id = ?";
+                    "recurring_interval = ? WHERE id = ? AND user_id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -97,6 +104,7 @@ public class TaskDAOImpl implements TaskDAO {
             pstmt.setBoolean(7, task.isRecurring());
             pstmt.setString(8, task.getRecurringInterval());
             pstmt.setInt(9, task.getId());
+            pstmt.setInt(10, currentUserId);
             
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows == 0) {
@@ -107,12 +115,13 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public void delete(int id) throws SQLException {
-        String sql = "DELETE FROM tasks WHERE id = ?";
+        String sql = "DELETE FROM tasks WHERE id = ? AND user_id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, id);
+            pstmt.setInt(2, currentUserId);
             
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows == 0) {
@@ -123,15 +132,28 @@ public class TaskDAOImpl implements TaskDAO {
 
     @Override
     public void setTaskDependency(int taskId, int dependsOnTaskId) throws SQLException {
-        String sql = "INSERT INTO task_dependencies (task_id, depends_on_task_id) VALUES (?, ?)";
+        // First verify both tasks belong to the current user
+        String verifySQL = "SELECT COUNT(*) FROM tasks WHERE id IN (?, ?) AND user_id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement verifyStmt = conn.prepareStatement(verifySQL)) {
             
-            pstmt.setInt(1, taskId);
-            pstmt.setInt(2, dependsOnTaskId);
+            verifyStmt.setInt(1, taskId);
+            verifyStmt.setInt(2, dependsOnTaskId);
+            verifyStmt.setInt(3, currentUserId);
             
-            pstmt.executeUpdate();
+            try (ResultSet rs = verifyStmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) != 2) {
+                    throw new SQLException("Cannot set dependency: one or both tasks do not belong to the current user");
+                }
+            }
+            
+            String sql = "INSERT INTO task_dependencies (task_id, depends_on_task_id) VALUES (?, ?)";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, taskId);
+                pstmt.setInt(2, dependsOnTaskId);
+                pstmt.executeUpdate();
+            }
         }
     }
 

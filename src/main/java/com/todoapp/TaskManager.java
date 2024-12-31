@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 
 public class TaskManager {
     private TaskDAO taskDAO;
-    private int currentUserId; // For database operations
+    private final int currentUserId;
 
-    public TaskManager() {
-        this.taskDAO = new TaskDAOImpl();
-        this.currentUserId = 1; // Default user ID for testing
+    public TaskManager(int userId) {
+        this.taskDAO = new TaskDAOImpl(userId);
+        this.currentUserId = userId;
     }
 
     public void addTask(Scanner scanner) {
