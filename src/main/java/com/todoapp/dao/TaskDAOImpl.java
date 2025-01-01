@@ -6,7 +6,9 @@ import com.todoapp.util.DatabaseConnection;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TaskDAOImpl implements TaskDAO {
     private final int currentUserId;
@@ -208,5 +210,47 @@ public class TaskDAOImpl implements TaskDAO {
         }
         
         return task;
+    }
+    public int getTotalTasks() throws SQLException {
+        String query = "SELECT COUNT(*) AS total FROM tasks";
+        try (Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery()) {
+            return rs.next() ? rs.getInt("total") : 0;
+        }
+    }
+
+    @Override
+    public int getCompletedTasks() throws SQLException {
+        String query = "SELECT COUNT(*) AS completed FROM tasks WHERE is_complete = 'Completed'";
+        try (Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery()) {
+            return rs.next() ? rs.getInt("completed") : 0;
+        }
+    }
+
+    @Override
+    public int getPendingTasks() throws SQLException {
+        String query = "SELECT COUNT(*) AS pending FROM tasks WHERE is_complete = 'Incomplete'";
+        try (Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery()) {
+            return rs.next() ? rs.getInt("pending") : 0;
+        }
+    }
+
+    @Override
+    public Map<String, Integer> getCategorySummary() throws SQLException {
+        String query = "SELECT category, COUNT(*) AS count FROM tasks GROUP BY category";
+        Map<String, Integer> categorySummary = new HashMap<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                categorySummary.put(rs.getString("category"), rs.getInt("count"));
+            }
+        }
+        return categorySummary;
     }
 }
