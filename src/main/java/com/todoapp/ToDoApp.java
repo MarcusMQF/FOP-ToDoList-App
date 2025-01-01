@@ -101,15 +101,19 @@ public class ToDoApp extends Application {
                         taskManager.searchTasks(scanner);
                         break;
                     case 7:
+                        taskManager.vectorSearchTasks(scanner);
+                    case 8:
                         taskManager.setTaskDependency(scanner);
                         break;
-                    case 8:
+                    case 9:
                         taskManager.editTask(scanner);
                         break;
-                    case 9:
+                    case 10:
                         taskManager.viewTaskDetails(scanner);
                         break;
-                    case 10:
+                    case 11:
+                        taskManager.displayAnalytics();
+                    case 12:
                         running = false;
                         System.out.println("\u001b[32mThank you for using the TODO List App!\u001b[0m");
                         break;
