@@ -223,22 +223,27 @@ public class TaskManager {
 
     public void markTaskComplete(Scanner scanner) {
         System.out.println("\u001B[31m=== Mark Task as Complete ===\u001B[0m");
-        displayTasks();
+        try {
+            List<Task> tasks = taskDAO.getAllByUserId(currentUserId);
+            if (tasks.isEmpty()) {
+                System.out.println("\u001b[31mWARNING:\u001b[0m No tasks found.");
+                return;
+            }
+            
+            displayTasks();
 
-        while (true) {
-            try {
-                System.out.print("\nEnter the task number to mark as complete: ");
-                String input = scanner.nextLine().trim();
-                
-                if (input.isEmpty()) {
-                    System.out.println("\u001b[31mERROR:\u001b[0m Task number cannot be empty.");
-                    continue;
-                }
-
-                int taskNum = Integer.parseInt(input);
-                
+            while (true) {
                 try {
-                    List<Task> tasks = taskDAO.getAllByUserId(currentUserId);
+                    System.out.print("\nEnter the task number to mark as complete: ");
+                    String input = scanner.nextLine().trim();
+                    
+                    if (input.isEmpty()) {
+                        System.out.println("\u001b[31mERROR:\u001b[0m Task number cannot be empty.");
+                        continue;
+                    }
+
+                    int taskNum = Integer.parseInt(input);
+                    
                     if (taskNum < 1 || taskNum > tasks.size()) {
                         System.out.println("\u001b[31mERROR:\u001b[0m Invalid task number.");
                         continue;
@@ -278,31 +283,35 @@ public class TaskManager {
                     System.out.println("\u001b[31mERROR:\u001b[0m Database error: " + e.getMessage());
                     break;
                 }
-                
-            } catch (NumberFormatException e) {
-                System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid number.");
             }
+        } catch (SQLException e) {
+            System.out.println("\u001b[31mERROR:\u001b[0m Database error: " + e.getMessage());
         }
     }
 
     public void deleteTask(Scanner scanner) {
         System.out.println("\u001B[31m=== Delete a Task ===\u001B[0m");
-        displayTasks();
+        try {
+            List<Task> tasks = taskDAO.getAllByUserId(currentUserId);
+            if (tasks.isEmpty()) {
+                System.out.println("\u001b[31mWARNING:\u001b[0m No tasks found.");
+                return;
+            }
+            
+            displayTasks();
 
-        while (true) {
-            try {
-                System.out.print("\nEnter the task number to delete: ");
-                String input = scanner.nextLine().trim();
-                
-                if (input.isEmpty()) {
-                    System.out.println("\u001b[31mERROR:\u001b[0m Task number cannot be empty.");
-                    continue;
-                }
-
-                int taskNum = Integer.parseInt(input);
-                
+            while (true) {
                 try {
-                    List<Task> tasks = taskDAO.getAllByUserId(currentUserId);
+                    System.out.print("\nEnter the task number to delete: ");
+                    String input = scanner.nextLine().trim();
+                    
+                    if (input.isEmpty()) {
+                        System.out.println("\u001b[31mERROR:\u001b[0m Task number cannot be empty.");
+                        continue;
+                    }
+
+                    int taskNum = Integer.parseInt(input);
+                    
                     if (taskNum < 1 || taskNum > tasks.size()) {
                         System.out.println("\u001b[31mERROR:\u001b[0m Invalid task number.");
                         continue;
@@ -313,14 +322,12 @@ public class TaskManager {
                     System.out.println("\n\u001b[32mTask [" + task.getTitle() + "] deleted successfully!\u001b[0m");
                     break;
                     
-                } catch (SQLException e) {
-                    System.out.println("\u001b[31mERROR:\u001b[0m Database error: " + e.getMessage());
-                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid number.");
                 }
-                
-            } catch (NumberFormatException e) {
-                System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid number.");
             }
+        } catch (SQLException e) {
+            System.out.println("\u001b[31mERROR:\u001b[0m Database error: " + e.getMessage());
         }
     }
 
@@ -428,7 +435,6 @@ public class TaskManager {
                 task.getPriority(),
                 formatDependencies(task));
         }
-        System.out.println();
     }
 
     public void searchTasks(Scanner scanner) {
@@ -471,198 +477,213 @@ public class TaskManager {
 
     public void editTask(Scanner scanner) {
         System.out.println("\u001B[31m=== Edit Task ===\u001B[0m");
-        displayTasks();
+        try {
+            List<Task> tasks = taskDAO.getAllByUserId(currentUserId);
+            if (tasks.isEmpty()) {
+                System.out.println("\u001b[31mWARNING:\u001b[0m No tasks found.");
+                return;
+            }
+            
+            displayTasks();
 
-        while (true) {
-            try {
-                System.out.print("\nEnter task number to edit: ");
-                String input = scanner.nextLine().trim();
-                
-                if (input.isEmpty()) {
-                    System.out.println("\u001b[31mERROR:\u001b[0m Task number cannot be empty.");
-                    continue; // Prompt again for input
-                }
-
-                int taskNum = Integer.parseInt(input);
-                List<Task> tasks = taskDAO.getAllByUserId(currentUserId);
-                
-                if (taskNum < 1 || taskNum > tasks.size()) {
-                    System.out.println("\u001b[31mERROR:\u001b[0m Invalid task number.");
-                    continue; // Prompt again for input
-                }
-
-                Task task = tasks.get(taskNum - 1);
-                System.out.println("\nWhat would you like to edit?");
-                System.out.println("1. Title");
-                System.out.println("2. Description");
-                System.out.println("3. Due Date");
-                System.out.println("4. Category");
-                System.out.println("5. Priority");
-                System.out.println("6. Set Task Dependency");
-                System.out.println("7. Cancel");
-                System.out.print("\n> ");
-                
-                while (true) {
-                    String choiceInput = scanner.nextLine().trim();
+            while (true) {
+                try {
+                    System.out.print("\nEnter task number to edit: ");
+                    String input = scanner.nextLine().trim();
                     
-                    if (choiceInput.isEmpty()) {
-                        System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid choice.");
-                        System.out.println();
-                        System.out.print("> ");
-                        continue; // Prompt again for input
+                    if (input.isEmpty()) {
+                        System.out.println("\u001b[31mERROR:\u001b[0m Task number cannot be empty.");
+                        continue;
                     }
 
-                    try {
-                        int choice = Integer.parseInt(choiceInput);
-                        if (choice < 1 || choice > 7) {
+                    int taskNum = Integer.parseInt(input);
+                    
+                    if (taskNum < 1 || taskNum > tasks.size()) {
+                        System.out.println("\u001b[31mERROR:\u001b[0m Invalid task number.");
+                        continue;
+                    }
+
+                    Task task = tasks.get(taskNum - 1);
+                    System.out.println("\nWhat would you like to edit?");
+                    System.out.println("1. Title");
+                    System.out.println("2. Description");
+                    System.out.println("3. Due Date");
+                    System.out.println("4. Category");
+                    System.out.println("5. Priority");
+                    System.out.println("6. Set Task Dependency");
+                    System.out.println("7. Cancel");
+                    System.out.print("\n> ");
+                    
+                    while (true) {
+                        String choiceInput = scanner.nextLine().trim();
+                        
+                        if (choiceInput.isEmpty()) {
                             System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid choice.");
                             System.out.println();
                             System.out.print("> ");
                             continue; // Prompt again for input
                         }
 
-                        switch (choice) {
-                            case 1:
-                                while (true) {
-                                    System.out.print("\nEnter new title: ");
-                                    String title = scanner.nextLine().trim();
-                                    if (title.length() >= 3) {
-                                        task.setTitle(title);
-                                        break;
-                                    }
-                                    System.out.println("\u001b[31mERROR:\u001b[0m Title must be at least 3 characters long.");
-                                }
-                                break;
-                            case 2:
-                                while (true) {
-                                    System.out.print("\nEnter new description: ");
-                                    String description = scanner.nextLine().trim();
-                                    if (description.length() >= 5) {
-                                        task.setDescription(description);
-                                        break;
-                                    }
-                                    System.out.println("\u001b[31mERROR:\u001b[0m Description must be at least 5 characters long.");
-                                }
-                                break;
-                            case 3:
-                                while (true) {
-                                    try {
-                                        System.out.print("\nEnter new due date (YYYY-MM-DD): ");
-                                        LocalDate dueDate = LocalDate.parse(scanner.nextLine().trim());
-                                        if (!dueDate.isBefore(LocalDate.now())) {
-                                            task.setDueDate(dueDate);
+                        try {
+                            int choice = Integer.parseInt(choiceInput);
+                            if (choice < 1 || choice > 7) {
+                                System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid choice.");
+                                System.out.println();
+                                System.out.print("> ");
+                                continue; // Prompt again for input
+                            }
+
+                            switch (choice) {
+                                case 1:
+                                    while (true) {
+                                        System.out.print("\nEnter new title: ");
+                                        String title = scanner.nextLine().trim();
+                                        if (title.length() >= 3) {
+                                            task.setTitle(title);
                                             break;
                                         }
-                                        System.out.println("\u001b[31mERROR:\u001b[0m Due date cannot be in the past!");
-                                    } catch (Exception e) {
-                                        System.out.println("\u001b[31mERROR:\u001b[0m Invalid date format! Please use YYYY-MM-DD.");
+                                        System.out.println("\u001b[31mERROR:\u001b[0m Title must be at least 3 characters long.");
                                     }
-                                }
-                                break;
-                            case 4:
-                                while (true) {
-                                    System.out.print("\nEnter new category (Homework, Personal, Work): ");
-                                    String category = scanner.nextLine().trim();
-                                    if (category.equalsIgnoreCase("Homework") || 
-                                        category.equalsIgnoreCase("Personal") || 
-                                        category.equalsIgnoreCase("Work")) {
-                                        task.setCategory(capitalize(category));
-                                        break;
+                                    break;
+                                case 2:
+                                    while (true) {
+                                        System.out.print("\nEnter new description: ");
+                                        String description = scanner.nextLine().trim();
+                                        if (description.length() >= 5) {
+                                            task.setDescription(description);
+                                            break;
+                                        }
+                                        System.out.println("\u001b[31mERROR:\u001b[0m Description must be at least 5 characters long.");
                                     }
-                                    System.out.println("\u001b[31mERROR:\u001b[0m Invalid category.");
-                                }
-                                break;
-                            case 5:
-                                while (true) {
-                                    System.out.print("\nEnter new priority (High, Medium, Low): ");
-                                    String priority = scanner.nextLine().trim();
-                                    if (priority.equalsIgnoreCase("High") || 
-                                        priority.equalsIgnoreCase("Medium") || 
-                                        priority.equalsIgnoreCase("Low")) {
-                                        task.setPriority(capitalize(priority));
-                                        break;
+                                    break;
+                                case 3:
+                                    while (true) {
+                                        try {
+                                            System.out.print("\nEnter new due date (YYYY-MM-DD): ");
+                                            LocalDate dueDate = LocalDate.parse(scanner.nextLine().trim());
+                                            if (!dueDate.isBefore(LocalDate.now())) {
+                                                task.setDueDate(dueDate);
+                                                break;
+                                            }
+                                            System.out.println("\u001b[31mERROR:\u001b[0m Due date cannot be in the past!");
+                                        } catch (Exception e) {
+                                            System.out.println("\u001b[31mERROR:\u001b[0m Invalid date format! Please use YYYY-MM-DD.");
+                                        }
                                     }
-                                    System.out.println("\u001b[31mERROR:\u001b[0m Invalid priority.");
-                                }
-                                break;
-                            case 6:
-                                System.out.println();
-                                boolean dependencySet = handleSetDependencyInEdit(scanner, task, tasks);
-                                if (!dependencySet) {
-                                    return; // Return without showing "Task updated successfully"
-                                }
-                                break;
-                            case 7:
-                                return; // Exit if canceling
+                                    break;
+                                case 4:
+                                    while (true) {
+                                        System.out.print("\nEnter new category (Homework, Personal, Work): ");
+                                        String category = scanner.nextLine().trim();
+                                        if (category.equalsIgnoreCase("Homework") || 
+                                            category.equalsIgnoreCase("Personal") || 
+                                            category.equalsIgnoreCase("Work")) {
+                                            task.setCategory(capitalize(category));
+                                            break;
+                                        }
+                                        System.out.println("\u001b[31mERROR:\u001b[0m Invalid category.");
+                                    }
+                                    break;
+                                case 5:
+                                    while (true) {
+                                        System.out.print("\nEnter new priority (High, Medium, Low): ");
+                                        String priority = scanner.nextLine().trim();
+                                        if (priority.equalsIgnoreCase("High") || 
+                                            priority.equalsIgnoreCase("Medium") || 
+                                            priority.equalsIgnoreCase("Low")) {
+                                            task.setPriority(capitalize(priority));
+                                            break;
+                                        }
+                                        System.out.println("\u001b[31mERROR:\u001b[0m Invalid priority.");
+                                    }
+                                    break;
+                                case 6:
+                                    System.out.println();
+                                    boolean dependencySet = handleSetDependencyInEdit(scanner, task, tasks);
+                                    if (!dependencySet) {
+                                        return; // Return without showing "Task updated successfully"
+                                    }
+                                    break;
+                                case 7:
+                                    return; // Exit if canceling
+                            }
+
+                            taskDAO.update(task);
+                            System.out.println("\n\u001b[32mTask updated successfully!\u001b[0m");
+                            return; // Exit the editTask method after successful update
+
+                        } catch (NumberFormatException e) {
+                            System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid choice.");
+                            System.out.println();
+                            System.out.print("> ");
                         }
-
-                        taskDAO.update(task);
-                        System.out.println("\n\u001b[32mTask updated successfully!\u001b[0m");
-                        return; // Exit the editTask method after successful update
-
-                    } catch (NumberFormatException e) {
-                        System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid choice.");
-                        System.out.println();
-                        System.out.print("> ");
                     }
-                }
 
-            } catch (NumberFormatException e) {
-                System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid number.");
-            } catch (SQLException e) {
-                System.out.println("\u001b[31mERROR:\u001b[0m Database error: " + e.getMessage());
+                } catch (NumberFormatException e) {
+                    System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid number.");
+                } catch (SQLException e) {
+                    System.out.println("\u001b[31mERROR:\u001b[0m Database error: " + e.getMessage());
+                }
             }
+        } catch (SQLException e) {
+            System.out.println("\u001b[31mERROR:\u001b[0m Database error: " + e.getMessage());
         }
     }
 
     public void viewTaskDetails(Scanner scanner) {
         System.out.println("\u001B[31m=== View Task Details ===\u001B[0m");
-        displayTasks();
-
-        while (true) {
-            try {
-                System.out.print("\nEnter task number to view details: ");
-                String input = scanner.nextLine().trim();
-                
-                if (input.isEmpty()) {
-                    System.out.println("\u001b[31mERROR:\u001b[0m Task Number cannot be empty.");
-                    continue;
-                }
-
-                int taskNum = Integer.parseInt(input);
-                List<Task> tasks = taskDAO.getAllByUserId(currentUserId);
-                
-                if (taskNum < 1 || taskNum > tasks.size()) {
-                    System.out.println("\u001b[31mERROR:\u001b[0m Invalid Task Number.");
-                    continue;
-                }
-
-                Task task = tasks.get(taskNum - 1);
-                System.out.println("\n\u001b[35mTask Details:\u001b[0m");
-                System.out.println("Title: " + task.getTitle());
-                System.out.println("Description: " + task.getDescription());
-                System.out.println("Due Date: " + task.getDueDate());
-                System.out.println("Category: " + task.getCategory());
-                System.out.println("Priority: " + task.getPriority());
-                System.out.println("Status: " + (task.isComplete() ? "Completed" : "Incomplete"));
-                System.out.println("Recurring: " + (task.isRecurring() ? "Yes" : "No"));
-                if (task.isRecurring()) {
-                    System.out.println("Recurring Interval: " + task.getRecurringInterval());
-                }
-                if (task.getDependencies().stream().anyMatch(t -> !t.isComplete())) {
-                    System.out.println("Depends on: " + task.getDependencies().stream()
-                        .filter(t -> !t.isComplete())
-                        .map(Task::getTitle)
-                        .collect(Collectors.joining(", ")));
-                }
-                break;
-                
-            } catch (NumberFormatException e) {
-                System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid number.");
-            } catch (SQLException e) {
-                System.out.println("\u001b[31mERROR:\u001b[0m DATABASE ERROR: " + e.getMessage().toUpperCase());
-                break;
+        try {
+            List<Task> tasks = taskDAO.getAllByUserId(currentUserId);
+            if (tasks.isEmpty()) {
+                System.out.println("\u001b[31mWARNING:\u001b[0m No tasks found.");
+                return;
             }
+            
+            displayTasks();
+
+            while (true) {
+                try {
+                    System.out.print("\nEnter task number to view details: ");
+                    String input = scanner.nextLine().trim();
+                    
+                    if (input.isEmpty()) {
+                        System.out.println("\u001b[31mERROR:\u001b[0m Task Number cannot be empty.");
+                        continue;
+                    }
+
+                    int taskNum = Integer.parseInt(input);
+                    
+                    if (taskNum < 1 || taskNum > tasks.size()) {
+                        System.out.println("\u001b[31mERROR:\u001b[0m Invalid Task Number.");
+                        continue;
+                    }
+
+                    Task task = tasks.get(taskNum - 1);
+                    System.out.println("\n\u001b[35mTask Details:\u001b[0m");
+                    System.out.println("Title: " + task.getTitle());
+                    System.out.println("Description: " + task.getDescription());
+                    System.out.println("Due Date: " + task.getDueDate());
+                    System.out.println("Category: " + task.getCategory());
+                    System.out.println("Priority: " + task.getPriority());
+                    System.out.println("Status: " + (task.isComplete() ? "Completed" : "Incomplete"));
+                    System.out.println("Recurring: " + (task.isRecurring() ? "Yes" : "No"));
+                    if (task.isRecurring()) {
+                        System.out.println("Recurring Interval: " + task.getRecurringInterval());
+                    }
+                    if (task.getDependencies().stream().anyMatch(t -> !t.isComplete())) {
+                        System.out.println("Depends on: " + task.getDependencies().stream()
+                            .filter(t -> !t.isComplete())
+                            .map(Task::getTitle)
+                            .collect(Collectors.joining(", ")));
+                    }
+                    break;
+                    
+                } catch (NumberFormatException e) {
+                    System.out.println("\u001b[31mERROR:\u001b[0m Please enter a valid number.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("\u001b[31mERROR:\u001b[0m Database error: " + e.getMessage());
         }
     }
 
@@ -835,6 +856,12 @@ public class TaskManager {
 
     private boolean handleSetDependencyInEdit(Scanner scanner, Task task, List<Task> allTasks) throws SQLException {
         System.out.println("\u001B[31m=== Set Task Dependency ===\u001B[0m");
+        
+        if (allTasks.size() < 2) {
+            System.out.println("\u001b[31mERROR:\u001b[0m You need at least 2 tasks to set up dependencies.");
+            return false;
+        }
+        
         displayTasks();
         
         // Validate dependent task first
