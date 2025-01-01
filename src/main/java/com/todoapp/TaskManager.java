@@ -1,6 +1,7 @@
 package com.todoapp;
 
 import com.todoapp.model.Task;
+import com.search.VectorSearch;
 import com.todoapp.dao.TaskDAO;
 import com.todoapp.dao.TaskDAOImpl;
 import java.time.LocalDate;
@@ -11,10 +12,12 @@ import java.util.stream.Collectors;
 public class TaskManager {
     private TaskDAO taskDAO;
     private final int currentUserId;
+    private VectorSearch vectorSearch;
 
     public TaskManager(int userId) {
         this.taskDAO = new TaskDAOImpl(userId);
         this.currentUserId = userId;
+        this.vectorSearch = new VectorSearch(userId);
     }
 
     public void addTask(Scanner scanner) {
@@ -468,10 +471,26 @@ public class TaskManager {
                     task.getCategory(),
                     task.getPriority(),
                     formatDependencies(task));
-                System.out.println();
             }
         } catch (SQLException e) {
             System.out.println("\u001b[31mERROR:\u001b[0m Database error: " + e.getMessage());
+        }
+    }
+
+    public void vectorSearchTasks(Scanner scanner) {
+        System.out.println("\u001B[31m=== Search Tasks ===\u001B[0m");
+        System.out.print("Enter a keyword or phrase to search tasks: ");
+        String query = scanner.nextLine();
+
+        List<String> results = this.vectorSearch.searchTasks(query);
+
+        System.out.println("\n\u001b[31m=== Vector Search Results ===\u001b[0m");
+        if (results.isEmpty()) {
+            System.out.println("\u001b[31mWARNING:\u001b[0m No tasks found matching your search.");
+        } else {
+            for (String result : results) {
+                System.out.println(result);
+            }
         }
     }
 
@@ -957,5 +976,38 @@ public class TaskManager {
             return false;
         }
         return true;
+    }
+    public void displayAnalytics() {
+        try {
+            // Fetch analytics
+            int totalTasks = taskDAO.getTotalTasks();
+            int completedTasks = taskDAO.getCompletedTasks();
+            int pendingTasks = taskDAO.getPendingTasks();
+            Map<String, Integer> categorySummary = taskDAO.getCategorySummary();
+
+            // Compute completion rate
+            double completionRate = totalTasks > 0 ? (double) completedTasks / totalTasks * 100 : 0;
+
+            // Format category summary
+            StringBuilder categorySummaryString = new StringBuilder();
+            for (Map.Entry<String, Integer> entry : categorySummary.entrySet()) {
+                categorySummaryString.append(entry.getKey()).append(": ").append(entry.getValue()).append(", ");
+            }
+            if (categorySummaryString.length() > 0) {
+                categorySummaryString.setLength(categorySummaryString.length() - 2);
+            }
+
+            // Display analytics
+            System.out.println("\u001B[31m=== Analytics Dashboard ===\u001B[0m");
+            System.out.println("- Total Tasks: " + totalTasks);
+            System.out.println("- Completed: " + completedTasks);
+            System.out.println("- Incomplete: " + pendingTasks);
+            System.out.printf("- Completion Rate: %.2f%%\n", completionRate);
+            System.out.println("- Task Categories: " + categorySummaryString);
+
+        } catch (SQLException e) {
+            System.out.println("Error generating analytics: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
