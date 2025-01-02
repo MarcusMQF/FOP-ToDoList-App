@@ -1,7 +1,6 @@
 package com.todoapp.controller;
 
 import com.todoapp.dao.UserDAOImpl;
-import com.todoapp.ToDoApp;
 import com.todoapp.service.AuthenticationService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -12,6 +11,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
 import com.todoapp.model.User;
+import com.todoapp.model.Task;
+import com.todoapp.service.EmailService;
+import java.util.List;
+import java.util.stream.Collectors;
+import com.todoapp.TaskManager;
+import java.util.concurrent.CompletableFuture;
 
 public class LoginController {
     @FXML private TextField usernameField;
@@ -36,8 +41,9 @@ public class LoginController {
         
         try {
             User user = authService.login(username, password);
-            ToDoApp.initializeTaskManager(user.getId());
+            TaskManager taskManager = new TaskManager(user.getId());
             
+            // Load dashboard immediately
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
             Parent root = loader.load();
             
@@ -49,16 +55,26 @@ public class LoginController {
             
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setTitle("ToDo List App - Dashboard");
-            
-            // Set window size to match login/register pages
-            stage.setWidth(900);  // Adjust these values as needed
-            stage.setHeight(600); // Adjust these values as needed
             stage.setScene(scene);
             
-            stage.setOnCloseRequest(event -> {
-                ToDoApp.setGuiCompleted(true);
+            // Run task check and email sending in background
+            CompletableFuture.runAsync(() -> {
+                try {
+                    List<Task> dueTasks = taskManager.getTasksDueWithin24Hours();
+                    if (!dueTasks.isEmpty()) {
+                        String taskDetails = dueTasks.stream()
+                            .map(task -> String.format("%s (Due: %s)", 
+                                task.getTitle(), 
+                                task.getDueDate().toString()))
+                            .collect(Collectors.joining("\n"));
+                        
+                        EmailService.sendTaskReminderEmail(user.getEmail(), user.getUsername(), taskDetails);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             });
-        
+            
         } catch (Exception e) {
             showError(e.getMessage());
         }

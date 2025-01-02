@@ -2,6 +2,7 @@ package com.todoapp.controller;
 
 import com.todoapp.dao.UserDAOImpl;
 import com.todoapp.service.AuthenticationService;
+import com.todoapp.service.EmailService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -10,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
+import java.util.concurrent.CompletableFuture;
 
 public class RegisterController {
     @FXML private TextField usernameField;
@@ -42,9 +44,25 @@ public class RegisterController {
         }
         
         try {
+            // Register the user
             authService.register(username, email, password);
+            
+            // Switch to login page immediately
             switchToLogin();
+            
+            // Send welcome email in background
+            CompletableFuture.runAsync(() -> {
+                try {
+                    EmailService.sendWelcomeEmail(email, username);
+                } catch (Exception e) {
+                    System.err.println("Failed to send welcome email: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            });
+            
         } catch (Exception e) {
+            System.err.println("Error during registration: " + e.getMessage());
+            e.printStackTrace();
             if (!e.getMessage().contains("not implemented")) {
                 showError(e.getMessage());
             } else {

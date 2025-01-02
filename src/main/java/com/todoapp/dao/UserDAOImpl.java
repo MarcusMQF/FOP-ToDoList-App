@@ -8,30 +8,28 @@ import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
     @Override
-    public User create(User user) throws SQLException {
+    public User create(String username, String email, String password) throws SQLException {
         String sql = "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
         
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
-            pstmt.setString(1, user.getUsername());
-            pstmt.setString(2, user.getEmail());
-            pstmt.setString(3, user.getPasswordHash());
+            pstmt.setString(1, username);
+            pstmt.setString(2, email);
+            pstmt.setString(3, password);
             
             int affectedRows = pstmt.executeUpdate();
-            if (affectedRows == 0) {
-                throw new SQLException("Creating user failed, no rows affected.");
-            }
             
-            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    user.setId(generatedKeys.getInt(1));
-                } else {
-                    throw new SQLException("Creating user failed, no ID obtained.");
+            if (affectedRows > 0) {
+                try (Statement stmt = conn.createStatement();
+                     ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()")) {
+                    if (rs.next()) {
+                        int id = rs.getInt(1);
+                        return new User(id, username, email, password, null);
+                    }
                 }
             }
-            
-            return user;
+            throw new SQLException("Creating user failed, no ID obtained.");
         }
     }
 
@@ -141,5 +139,10 @@ public class UserDAOImpl implements UserDAO {
                 throw new SQLException("Deleting user failed, no rows affected.");
             }
         }
+    }
+
+    @Override
+    public User create(User user) throws SQLException {
+        return create(user.getUsername(), user.getEmail(), user.getPasswordHash());
     }
 }

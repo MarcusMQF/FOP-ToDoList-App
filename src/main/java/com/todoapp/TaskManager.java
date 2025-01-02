@@ -1097,4 +1097,15 @@ public class TaskManager {
         }
         return false;
     }
+
+    public List<Task> getTasksDueWithin24Hours() throws SQLException {
+        List<Task> allTasks = taskDAO.getAllByUserId(currentUserId);
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        
+        return allTasks.stream()
+            .filter(task -> !task.isComplete() && 
+                    task.getDueDate() != null && 
+                    !task.getDueDate().isAfter(tomorrow))
+            .collect(Collectors.toList());
+    }
 }
