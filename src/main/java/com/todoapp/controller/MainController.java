@@ -16,6 +16,8 @@ import java.util.Map;
 import javafx.geometry.Insets;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Label;
+import java.util.Optional;
+import com.todoapp.service.AuthService;
 
 public class MainController {
     @FXML private Label userNameLabel;
@@ -24,10 +26,11 @@ public class MainController {
     
     private User currentUser;
     private TaskManager taskManager;
+    private AuthService authService;
 
     @FXML
     public void initialize() {
-        // Initialize any default values or settings
+        authService = new AuthService();
     }
 
     public void initializeUser(User user) {
@@ -154,6 +157,35 @@ public class MainController {
             stage.setScene(scene);
         } catch (IOException e) {
             showError("Failed to logout: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleDeleteAccount() {
+        Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Delete Account");
+        confirmDialog.setHeaderText("Are you sure you want to delete your account?");
+        confirmDialog.setContentText("This action cannot be undone. All your data will be permanently deleted.");
+
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                // Delete user from database
+                authService.deleteUser(currentUser.getId());
+                
+                // Switch to register page
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+                
+                Stage stage = (Stage) contentArea.getScene().getWindow();
+                stage.setTitle("ToDo List App - Register");
+                stage.setScene(scene);
+                
+            } catch (Exception e) {
+                showError("Failed to delete account: " + e.getMessage());
+            }
         }
     }
 

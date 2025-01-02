@@ -3,9 +3,6 @@ package com.todoapp.service;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -50,18 +47,19 @@ public class EmailService {
         }
     }
 
+    private static final String TODO_ICON_URL = "https://i.imgur.com/VtaLfMB.png";
+    private static final String GITHUB_ICON_URL = "https://i.imgur.com/axoCybc.png";  
+
     public static void sendWelcomeEmail(String recipient, String username) {
         try {
             String subject = "Welcome to To-Do List App!";
             // Convert images to base64 to embed in email
-            String todoIconBase64 = convertImageToBase64("/images/todo-icon.png");
-            String githubIconBase64 = convertImageToBase64("/images/github.png");
             
             String htmlContent = String.format("""
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;">
                     <div style="background-color: white; border-radius: 10px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                         <div style="text-align: center; margin-bottom: 30px;">
-                            <img src="data:image/png;base64,%s" 
+                            <img src="%s" 
                                  alt="ToDo App Logo" 
                                  style="width: 80px; height: 80px;">
                         </div>
@@ -96,14 +94,14 @@ public class EmailService {
                             </p>
                             <a href="https://github.com/MarcusMQF/FOP-ToDoList-App" 
                                style="display: inline-block; text-decoration: none;">
-                                <img src="data:image/png;base64,%s" 
+                                <img src="%s" 
                                      alt="GitHub" 
                                      style="width: 24px; height: 24px;">
                             </a>
                         </div>
                     </div>
                 </div>
-                """, todoIconBase64, username, recipient, githubIconBase64);
+                """, TODO_ICON_URL, username, recipient, GITHUB_ICON_URL);
 
             sendEmail(recipient, subject, htmlContent);
         } catch (Exception e) {
@@ -112,39 +110,15 @@ public class EmailService {
         }
     }
 
-    private static String convertImageToBase64(String imagePath) {
-        try {
-            // Adjust path to look in the resources folder
-            InputStream is = EmailService.class.getResourceAsStream("/todoapp/resources/images" + imagePath);
-            if (is == null) {
-                System.err.println("Trying alternative path...");
-                // Try alternative path if first one fails
-                is = EmailService.class.getResourceAsStream("/images" + imagePath);
-                if (is == null) {
-                    throw new IOException("Image not found at paths: /todoapp/resources/images" + imagePath + 
-                                       " or /images" + imagePath);
-                }
-            }
-            byte[] imageBytes = is.readAllBytes();
-            return Base64.getEncoder().encodeToString(imageBytes);
-        } catch (IOException e) {
-            System.err.println("Failed to load image: " + imagePath);
-            e.printStackTrace();
-            return "";
-        }
-    }
-
     public static void sendTaskReminderEmail(String recipient, String username, String taskDetails) {
         try {
             String subject = "Task Due Reminder";
-            String todoIconBase64 = convertImageToBase64("todo-icon.png");
-            String githubIconBase64 = convertImageToBase64("github.png");
             
             String htmlContent = String.format("""
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;">
                     <div style="background-color: white; border-radius: 10px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                         <div style="text-align: center; margin-bottom: 30px;">
-                            <img src="data:image/png;base64,%s" 
+                            <img src="%s" 
                                  alt="ToDo App Logo" 
                                  style="width: 80px; height: 80px;">
                         </div>
@@ -180,14 +154,14 @@ public class EmailService {
                             </p>
                             <a href="https://github.com/MarcusMQF/FOP-ToDoList-App" 
                                style="display: inline-block; text-decoration: none;">
-                                <img src="data:image/png;base64,%s" 
+                                <img src="%s" 
                                      alt="GitHub" 
                                      style="width: 24px; height: 24px;">
                             </a>
                         </div>
                     </div>
                 </div>
-                """, todoIconBase64, username, formatTaskDetailsHtml(taskDetails), recipient, githubIconBase64);
+                """, TODO_ICON_URL, username, formatTaskDetailsHtml(taskDetails), recipient, GITHUB_ICON_URL);
 
             sendEmail(recipient, subject, htmlContent);
         } catch (Exception e) {

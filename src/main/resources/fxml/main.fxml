@@ -28,6 +28,9 @@
 
         <!-- Logout Button -->
         <Button text="Logout" onAction="#handleLogout" styleClass="logout-button"/>
+        
+        <!-- Delete Account Button -->
+        <Button text="Delete Account" onAction="#handleDeleteAccount" styleClass="logout-button"/>
     </VBox>
 
     <!-- Main Content Area -->

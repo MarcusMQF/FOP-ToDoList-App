@@ -44,13 +44,9 @@ public class RegisterController {
         }
         
         try {
-            // Register the user
             authService.register(username, email, password);
-            
-            // Switch to login page immediately
             switchToLogin();
             
-            // Send welcome email in background
             CompletableFuture.runAsync(() -> {
                 try {
                     EmailService.sendWelcomeEmail(email, username);
@@ -63,10 +59,12 @@ public class RegisterController {
         } catch (Exception e) {
             System.err.println("Error during registration: " + e.getMessage());
             e.printStackTrace();
-            if (!e.getMessage().contains("not implemented")) {
-                showError(e.getMessage());
+            
+            // Check if the error is about unique constraint violation
+            if (e.getMessage().contains("UNIQUE constraint") && e.getMessage().contains("users.email")) {
+                showError("This email address is already in use");
             } else {
-                switchToLogin();
+                showError(e.getMessage());
             }
         }
     }
