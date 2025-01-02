@@ -7,6 +7,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.util.Scanner;
+import java.util.List;
+import java.util.Map;
 
 public class ToDoApp extends Application {
     private static boolean guiCompleted = false;
@@ -16,12 +18,18 @@ public class ToDoApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
         
-        primaryStage.setTitle("ToDo List App - Register");
+        // Set consistent window size
+        primaryStage.setWidth(900);
+        primaryStage.setHeight(600);
+        primaryStage.setMinWidth(900);
+        primaryStage.setMinHeight(600);
+        
+        primaryStage.setTitle("ToDo List App - Login");
         primaryStage.setScene(scene);
         
         // Create a separate thread for the terminal app
@@ -103,7 +111,12 @@ public class ToDoApp extends Application {
                         taskManager.searchTasks(scanner);
                         break;
                     case 7:
-                        taskManager.vectorSearchTasks(scanner);
+                        System.out.print("Enter search query: ");
+                        String query = scanner.nextLine();
+                        List<Map<String, Object>> results = taskManager.vectorSearchTasks(query);
+                        results.forEach(task -> System.out.printf("%s - Due: %s%n", 
+                            task.get("title"), 
+                            task.get("due_date")));
                         break;
                     case 8:
                         taskManager.setTaskDependency(scanner);

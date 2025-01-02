@@ -15,9 +15,13 @@ public class TaskManager {
     private VectorSearch vectorSearch;
 
     public TaskManager(int userId) {
-        this.taskDAO = new TaskDAOImpl(userId);
         this.currentUserId = userId;
+        this.taskDAO = new TaskDAOImpl(userId);
         this.vectorSearch = new VectorSearch(userId);
+    }
+
+    public int getCurrentUserId() {
+        return currentUserId;
     }
 
     public void addTask(Scanner scanner) {
@@ -339,16 +343,12 @@ public class TaskManager {
     }
 
     private LocalDate calculateNewDueDate(LocalDate currentDueDate, String interval) {
-        switch (interval.toLowerCase()) {
-            case "daily":
-                return currentDueDate.plusDays(1);
-            case "weekly":
-                return currentDueDate.plusWeeks(1);
-            case "monthly":
-                return currentDueDate.plusMonths(1);
-            default:
-                return currentDueDate;
-        }
+        return switch (interval.toUpperCase()) {
+            case "DAILY" -> currentDueDate.plusDays(1);
+            case "WEEKLY" -> currentDueDate.plusWeeks(1);
+            case "MONTHLY" -> currentDueDate.plusMonths(1);
+            default -> throw new IllegalArgumentException("Invalid recurring interval");
+        };
     }
 
     public void sortTasks(Scanner scanner) {
@@ -477,20 +477,11 @@ public class TaskManager {
         }
     }
 
-    public void vectorSearchTasks(Scanner scanner) {
-        System.out.println("\u001B[31m=== Search Tasks ===\u001B[0m");
-        System.out.print("Enter a keyword or phrase to search tasks: ");
-        String query = scanner.nextLine();
-
-        List<String> results = this.vectorSearch.searchTasks(query);
-
-        System.out.println("\n\u001b[31m=== Vector Search Results ===\u001b[0m");
-        if (results.isEmpty()) {
-            System.out.println("\u001b[31mWARNING:\u001b[0m No tasks found matching your search.");
-        } else {
-            for (String result : results) {
-                System.out.println(result);
-            }
+    public List<Map<String, Object>> vectorSearchTasks(String query) {
+        try {
+            return vectorSearch.searchTasks(query);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to perform vector search: " + e.getMessage(), e);
         }
     }
 
@@ -1009,5 +1000,101 @@ public class TaskManager {
             System.out.println("Error generating analytics: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public List<Task> getAllTasks() throws SQLException {
+        return taskDAO.getAllByUserId(currentUserId);
+    }
+
+    public int getTotalTasks() throws SQLException {
+        return taskDAO.getTotalTasks();
+    }
+
+    public int getCompletedTasks() throws SQLException {
+        return taskDAO.getCompletedTasks();
+    }
+
+    public int getPendingTasks() throws SQLException {
+        return taskDAO.getPendingTasks();
+    }
+
+    public Task createTask(Task task) throws SQLException {
+        return taskDAO.create(task, currentUserId);
+    }
+
+    public void deleteTask(int taskId) throws SQLException {
+        taskDAO.delete(taskId);
+    }
+
+    public Map<String, Integer> getCategorySummary() throws SQLException {
+        return taskDAO.getCategorySummary();
+    }
+
+    public void addTask(Task task) throws SQLException {
+        if (task == null) {
+            throw new IllegalArgumentException("Task cannot be null");
+        }
+        
+        // Validate required fields
+        if (task.getTitle() == null || task.getTitle().trim().isEmpty() ||
+            task.getDescription() == null || task.getDescription().trim().isEmpty() ||
+            task.getDueDate() == null ||
+            task.getPriority() == null) {
+            throw new IllegalArgumentException("All task fields are required");
+        }
+        
+        try {
+            // Set default values for non-null constraints
+            if (task.getCategory() == null) {
+                task.setCategory("Default");
+            }
+            task.setComplete(false);  // Set default completion status
+            
+            // Create the task in database with current user ID
+            taskDAO.create(task, currentUserId);
+            
+            // Handle recurring tasks
+            // Reference to recurring task code:
+            // startLine: 1058
+            // endLine: 1073
+            
+        } catch (SQLException e) {
+            if (e.getMessage().contains("CONSTRAINT")) {
+                throw new SQLException("Failed to add task: Please ensure all required fields are filled");
+            }
+            throw e;
+        }
+    }
+
+    public void updateTask(Task task) throws SQLException {
+        taskDAO.update(task);
+    }
+
+    public void markTaskComplete(int taskId) throws SQLException {
+        Task task = taskDAO.getById(taskId);
+        task.setComplete(true);
+        taskDAO.update(task);
+    }
+
+    public List<Task> searchTasks(String keyword) throws SQLException {
+        List<Task> tasks = taskDAO.getAllByUserId(currentUserId);
+        return tasks.stream()
+            .filter(task -> 
+                task.getTitle().toLowerCase().contains(keyword.toLowerCase()) || 
+                task.getDescription().toLowerCase().contains(keyword.toLowerCase()))
+            .collect(Collectors.toList());
+    }
+
+    public boolean wouldCreateCircularDependency(Integer taskId, Integer dependencyId) throws SQLException {
+        if (taskId == null || dependencyId == null) return false;
+        
+        Task dependency = taskDAO.getById(dependencyId);
+        while (dependency != null && dependency.getDependencyId() != null) {
+            if (dependency.getDependencyId().equals(taskId)) {
+                return true;
+            }
+            dependency = taskDAO.getById(dependency.getDependencyId());
+        }
+        return false;
     }
 }

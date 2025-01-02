@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +19,8 @@ public class VectorSearch {
         this.currentUserId = userId;
     }
 
-    public List<String> searchTasks(String query) {
-        List<String> results = new ArrayList<>();
+    public List<Map<String, Object>> searchTasks(String query) throws SQLException {
+        List<Map<String, Object>> results = new ArrayList<>();
         
         // Check if there are any tasks before proceeding
         try (Connection conn = DatabaseConnection.getConnection();
@@ -28,14 +29,12 @@ public class VectorSearch {
             pstmt.setInt(1, currentUserId);
             ResultSet countRs = pstmt.executeQuery();
             if (countRs.next() && countRs.getInt(1) == 0) {
-                return results; // Return empty list if no tasks exist
+                return results;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return results;
         }
 
-        String sql = "SELECT title, description, due_date, is_complete, category FROM tasks WHERE user_id = ?";
+        String sql = "SELECT id, title, description, due_date, category, priority, is_complete, is_recurring, recurring_interval " +
+                    "FROM tasks WHERE user_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -43,12 +42,10 @@ public class VectorSearch {
             pstmt.setInt(1, currentUserId);
             ResultSet rs = pstmt.executeQuery();
 
-            // Collect descriptions and full task details during the first iteration   
             List<String> descriptions = new ArrayList<>();
             List<Map<String, Object>> taskDetails = new ArrayList<>();
 
             while (rs.next()) {
-                // Combine title, description, and category for better semantic matching
                 String searchableText = String.format("%s %s %s", 
                     rs.getString("title"),
                     rs.getString("description"),
@@ -56,54 +53,50 @@ public class VectorSearch {
                 ).toLowerCase();
                 
                 descriptions.add(searchableText);
+                
                 Map<String, Object> task = new HashMap<>();
-
+                task.put("id", rs.getLong("id"));
                 task.put("title", rs.getString("title"));
-                task.put("due_date", rs.getString("due_date"));
+                task.put("description", rs.getString("description"));
+                
+                // Handle date safely
+                String dueDateStr = rs.getString("due_date");
+                if (dueDateStr != null) {
+                    try {
+                        task.put("due_date", LocalDate.parse(dueDateStr));
+                    } catch (Exception e) {
+                        task.put("due_date", null);
+                    }
+                } else {
+                    task.put("due_date", null);
+                }
+                
                 task.put("category", rs.getString("category"));
-                task.put("is_complete", rs.getString("is_complete"));
-
+                task.put("priority", rs.getString("priority"));
+                task.put("is_complete", rs.getBoolean("is_complete"));
+                task.put("is_recurring", rs.getBoolean("is_recurring"));
+                task.put("recurring_interval", rs.getString("recurring_interval"));
                 taskDetails.add(task);
             }
 
-            // Generate similarity scores
-            String[] descriptionArray = descriptions.toArray(new String[0]);
-            if (descriptions.isEmpty()) {
-                System.out.println("\u001b[31mDEBUG:\u001b[0m No task descriptions found to search.");
-                return results;
-            }
-
-            String response = HuggingFaceClient.generateEmbedding(query, descriptionArray);
-            if (response == null) {
-                System.out.println("\u001b[31mDEBUG:\u001b[0m HuggingFace API returned null response.");
-                return results;
-            }
-            
-            // Parse similarity scores and filter results
-            if (response != null && !response.isEmpty()) {
-
-                String sanitizedResponse = response.replace("[", "").replace("]", "");
-
-                // Parse response (mock parsing; adjust based on actual API response)
-                String[] scores = sanitizedResponse.split(","); // Adjust parsing logic
-                for (int i = 0; i < descriptions.size(); i++) {
-                    double similarity = Double.parseDouble(scores[i].trim()); // Trim to remove extra spaces
-
-                    if (similarity > 0.2) {
-                        Map<String, Object> task = taskDetails.get(i);
-                        String result = String.format(
-                            "[%s] %s - Due: %s - Category: %s",
-                            "1".equals(task.get("is_complete").toString()) ? "Completed" : "Incomplete",
-                            task.get("title"),
-                            task.get("due_date"),
-                            task.get("category")
-                        );
-                        results.add(result);
+            if (!descriptions.isEmpty()) {
+                String[] descArray = descriptions.toArray(new String[0]);
+                String response = HuggingFaceClient.generateEmbedding(query, descArray);
+                
+                if (response != null && !response.isEmpty()) {
+                    try {
+                        String[] scores = response.replace("[", "").replace("]", "").split(",");
+                        for (int i = 0; i < Math.min(scores.length, taskDetails.size()); i++) {
+                            double score = Double.parseDouble(scores[i].trim());
+                            if (score > 0.22) { // Using 0.2 as threshold like in original code
+                                results.add(taskDetails.get(i));
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        throw new SQLException("Error parsing search results: " + e.getMessage());
                     }
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return results;
     }

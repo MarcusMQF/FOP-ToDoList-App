@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.todoapp.controller.DashboardController"
+      spacing="10" styleClass="dashboard-container">
+    
+    <!-- Statistics Section -->
+    <HBox spacing="15" styleClass="stats-container">
+        <VBox styleClass="stat-card">
+            <Label fx:id="totalTasksLabel" styleClass="stat-number"/>
+            <Label text="Total Tasks" styleClass="stat-label"/>
+        </VBox>
+        <VBox styleClass="stat-card">
+            <Label fx:id="pendingTasksLabel" styleClass="stat-number"/>
+            <Label text="Incomplete Tasks" styleClass="stat-label"/>
+        </VBox>
+        <VBox styleClass="stat-card">
+            <Label fx:id="completedTasksLabel" styleClass="stat-number"/>
+            <Label text="Completed Tasks" styleClass="stat-label"/>
+        </VBox>
+    </HBox>
+
+    <!-- Tasks Table Section -->
+    <VBox styleClass="table-container" VBox.vgrow="ALWAYS">
+        <HBox alignment="CENTER_RIGHT" styleClass="action-button-container">
+            <Button text="Add New Task" onAction="#handleAddTask"/>
+        </HBox>
+        
+        <TableView fx:id="recentTasksTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="noColumn" text="No" prefWidth="50"/>
+                <TableColumn fx:id="titleColumn" text="Title" prefWidth="300"/>
+                <TableColumn fx:id="dueDateColumn" text="Due Date" prefWidth="150"/>
+                <TableColumn fx:id="statusColumn" text="Status" prefWidth="150"/>
+                <TableColumn fx:id="recurringColumn" text="Recurring" prefWidth="100"/>
+                <TableColumn fx:id="actionColumn" text="Actions" prefWidth="200"/>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox> 

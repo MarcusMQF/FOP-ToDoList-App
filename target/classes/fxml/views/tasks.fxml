@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.todoapp.controller.TasksController">
+    <HBox spacing="10">
+        <ComboBox fx:id="filterCategory" promptText="Filter by Category"/>
+        <ComboBox fx:id="sortBy" promptText="Sort by"/>
+        <Button text="Add Task" onAction="#showAddTaskDialog"/>
+    </HBox>
+    <TableView fx:id="tasksTable">
+        <columns>
+            <TableColumn fx:id="taskTitleColumn" text="Title"/>
+            <TableColumn fx:id="taskDescriptionColumn" text="Description"/>
+            <TableColumn fx:id="dueDateColumn" text="Due Date"/>
+            <TableColumn fx:id="categoryColumn" text="Category"/>
+            <TableColumn fx:id="priorityColumn" text="Priority"/>
+            <TableColumn fx:id="statusColumn" text="Status"/>
+        </columns>
+    </TableView>
+</VBox> 

@@ -1,6 +1,7 @@
 package com.todoapp.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,11 +13,19 @@ public class Task {
     private boolean isComplete;
     private String category;
     private String priority;
-    private List<Task> dependencies;
+    private List<Task> dependencies = new ArrayList<>();
     private boolean isRecurring;
     private String recurringInterval;
+    private LocalDateTime createdAt;
+    private Integer dependencyId;
     
     // Constructor
+    public Task() {
+        this.dependencies = new ArrayList<>();
+        this.isComplete = false;
+        this.isRecurring = false;
+    }
+    
     public Task(String title, String description, LocalDate dueDate, String category, String priority, boolean isRecurring, String recurringInterval) {
         this.title = title;
         this.description = description;
@@ -66,6 +75,10 @@ public class Task {
         return recurringInterval;
     }
     
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
     // Setters
     public void setTitle(String title) {
         this.title = title;
@@ -105,11 +118,31 @@ public class Task {
         this.recurringInterval = recurringInterval;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getDependencyId() {
+        return dependencyId;
+    }
+
+    public void setDependencyId(Integer dependencyId) {
+        this.dependencyId = dependencyId;
+    }
+
+    public void setDependencies(List<Task> dependencies) {
+        this.dependencies = dependencies;
+    }
+
+    public boolean canComplete() {
+        return dependencies.stream().allMatch(Task::isComplete);
     }
 }

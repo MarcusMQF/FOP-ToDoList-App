@@ -37,9 +37,28 @@ public class LoginController {
         try {
             User user = authService.login(username, password);
             ToDoApp.initializeTaskManager(user.getId());
-            ToDoApp.setGuiCompleted(true);
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+            Parent root = loader.load();
+            
+            MainController mainController = loader.getController();
+            mainController.initializeUser(user);
+            
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/css/main.css").toExternalForm());
+            
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.close();
+            stage.setTitle("ToDo List App - Dashboard");
+            
+            // Set window size to match login/register pages
+            stage.setWidth(900);  // Adjust these values as needed
+            stage.setHeight(600); // Adjust these values as needed
+            stage.setScene(scene);
+            
+            stage.setOnCloseRequest(event -> {
+                ToDoApp.setGuiCompleted(true);
+            });
+        
         } catch (Exception e) {
             showError(e.getMessage());
         }
