@@ -28,8 +28,8 @@ public class RegisterController {
     
     @FXML
     private void handleRegister() {
-        String username = usernameField.getText().trim();
-        String email = emailField.getText().trim();
+        String username = usernameField.getText();
+        String email = emailField.getText();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
         
@@ -60,9 +60,15 @@ public class RegisterController {
             System.err.println("Error during registration: " + e.getMessage());
             e.printStackTrace();
             
-            // Check if the error is about unique constraint violation
-            if (e.getMessage().contains("UNIQUE constraint") && e.getMessage().contains("users.email")) {
-                showError("This email address is already in use");
+            // Check for different types of unique constraint violations
+            if (e.getMessage().contains("UNIQUE constraint")) {
+                if (e.getMessage().contains("users.email")) {
+                    showError("This email address is already in use");
+                } else if (e.getMessage().contains("users.password_hash")) {
+                    showError("This password is already in use");
+                } else {
+                    showError("Username or email already exists");
+                }
             } else {
                 showError(e.getMessage());
             }
