@@ -1,12 +1,12 @@
 .main-container {
-    -fx-background-color: #f5f6fa;
+    -fx-background-color: #aec0d3;
 }
 
 .sidebar {
     -fx-background-color: linear-gradient(to bottom, #3b5b7a, #486e8d);
     -fx-min-width: 200px;
     -fx-padding: 20px 15px;
-    -fx-spacing: 25px;
+    -fx-spacing: 15px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
 }
 
@@ -49,7 +49,7 @@
 
 .nav-section {
     -fx-spacing: 8px;
-    -fx-padding: 10px 0;
+    -fx-padding: 5px 0;
 }
 
 .nav-button {
@@ -76,8 +76,8 @@
 }
 
 .logout-button {
-    -fx-background-color: rgba(252, 83, 64, 0.2);
-    -fx-text-fill: #fc5340;
+    -fx-background-color: #fc5340;
+    -fx-text-fill: white;
     -fx-alignment: CENTER;
     -fx-padding: 12px 20px;
     -fx-background-radius: 8px;
@@ -86,26 +86,56 @@
     -fx-font-weight: bold;
     -fx-font-family: "Segoe UI";
     -fx-min-width: 170px;
-    -fx-border-color: #fc5340;
-    -fx-border-radius: 8px;
-    -fx-border-width: 1.5px;
-    -fx-effect: dropshadow(gaussian, rgba(252, 83, 64, 0.2), 4, 0, 0, 0);
-    -fx-margin-top: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 0);
+    -fx-transition: -fx-background-color 0.2s;
+    -fx-margin: -10 0 0 0;
 }
 
 .logout-button:hover {
-    -fx-background-color: rgba(252, 83, 64, 0.3);
-    -fx-effect: dropshadow(gaussian, rgba(252, 83, 64, 0.3), 6, 0, 0, 0);
+    -fx-background-color: #e64a38;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0, 0, 0);
+}
+
+.logout-button:pressed {
+    -fx-background-color: #d43f2d;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 0);
+}
+
+.delete-account-button {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-padding: 12px 20px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI";
+    -fx-min-width: 170px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 0);
+    -fx-transition: -fx-background-color 0.2s;
+    -fx-margin: -10 0 0 0;
+}
+
+.delete-account-button:hover {
+    -fx-background-color: #c82333;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0, 0, 0);
+}
+
+.delete-account-button:pressed {
+    -fx-background-color: #bd2130;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 0);
 }
 
 .content-area {
     -fx-padding: 20px;
     -fx-spacing: 20px;
+    -fx-background-color: #aec0d3;
 }
 
 /* Dashboard Styles */
 .dashboard-container {
-    -fx-background-color: #f8f9fa;
+    -fx-background-color: #aec0d3;
     -fx-padding: 20px;
     -fx-pref-height: 100vh;
 }
@@ -223,11 +253,242 @@
 }
 
 .table-view {
-    -fx-pref-height: 58vh;
-    -fx-max-height: 58vh;
+    -fx-background-color: transparent;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 8px;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 1);
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #3b5b7a;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 0 0 8px 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 45px;
+    -fx-border-color: transparent rgba(255,255,255,0.1) transparent transparent;
+    -fx-padding: 12px 20px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+.table-view .column-header:hover {
+    -fx-background-color: rgba(255,255,255,0.1);
+}
+
+.table-view .column-resize-line {
+    -fx-background-color: #4a90e2;
+    -fx-pref-width: 2;
+}
+
+.table-view .column-header-background .filler {
+    -fx-background-color: #3b5b7a;
+    -fx-background-radius: 8px 8px 0 0;
+}
+
+.table-view .table-cell {
+    -fx-alignment: CENTER;
+    -fx-padding: 12px;
+    -fx-text-fill: #495057;
+    -fx-font-size: 14px;
+    -fx-border-color: transparent #e9ecef #e9ecef transparent;
+}
+
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-table-cell-border-color: #e9ecef;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #e9ecef;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #e7f1ff;
+    -fx-text-fill: #004085;
+}
+
+/* Scrollbar styling */
+.table-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 0 1;
+}
+
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #dee2e6;
+    -fx-background-radius: 8px;
+}
+
+.table-view .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.table-view .scroll-bar:vertical .increment-button,
+.table-view .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 4;
+}
+
+/* Keep column resize functionality */
+.table-view .column-header .label {
+    -fx-alignment: CENTER;
 }
 
 .action-button-container {
     -fx-padding: 10px 0;
     -fx-spacing: 10px;
+}
+
+.analytics-container {
+    -fx-background-color: #aec0d3;
+}
+
+/* Keep cards white for contrast */
+.progress-card, .category-container, .dashboard-header {
+    -fx-background-color: #aec0d3;
+}
+
+.table-view .virtual-flow .clipped-container .sheet {
+    -fx-background-radius: 0 0 8px 8px;
+    -fx-background-color: white;
+}
+
+.table-row-cell:last-visible {
+    -fx-background-radius: 0 0 8px 8px;
+}
+
+/* Add Task Button Styling */
+.add-task-button {
+    -fx-background-color: linear-gradient(to right, #4CAF50, #45a049);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 12px 24px;
+    -fx-background-radius: 25px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.25), 8, 0, 0, 0);
+    -fx-min-width: 150px;
+    -fx-alignment: CENTER;
+}
+
+.add-task-button:hover {
+    -fx-background-color: linear-gradient(to right, #45a049, #3d8b40);
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.35), 10, 0, 0, 0);
+    -fx-translate-y: -1px;
+}
+
+.add-task-button:pressed {
+    -fx-background-color: linear-gradient(to right, #3d8b40, #357a38);
+    -fx-translate-y: 1px;
+}
+
+/* Dialog Styling */
+.custom-dialog {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-background-radius: 10px;
+}
+
+.custom-dialog .dialog-pane {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+}
+
+.custom-dialog .dialog-pane .content {
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+}
+
+.custom-dialog .dialog-pane .label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: bold;
+}
+
+.custom-dialog .text-field, 
+.custom-dialog .text-area,
+.custom-dialog .date-picker,
+.custom-dialog .combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px;
+    -fx-pref-width: 300px;
+    -fx-font-size: 14px;
+}
+
+.custom-dialog .text-field:focused,
+.custom-dialog .text-area:focused,
+.custom-dialog .date-picker:focused,
+.custom-dialog .combo-box:focused {
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.2), 8, 0, 0, 0);
+}
+
+.custom-dialog .button-bar .button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-min-width: 100px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 20px;
+}
+
+.custom-dialog .button-bar .button:hover {
+    -fx-background-color: #45a049;
+}
+
+.custom-dialog .button-bar .button.cancel {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #666666;
+}
+
+.custom-dialog .button-bar .button.cancel:hover {
+    -fx-background-color: #d5d5d5;
+}
+
+/* Dialog Grid Styling */
+.custom-dialog .grid {
+    -fx-hgap: 10px;
+    -fx-vgap: 15px;
+    -fx-padding: 20px;
+}
+
+.custom-dialog-field {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px;
+    -fx-pref-width: 300px;
+    -fx-font-size: 14px;
+}
+
+.custom-dialog-field:focused {
+    -fx-border-color: #4CAF50;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.2), 8, 0, 0, 0);
+}
+
+.custom-dialog .label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: bold;
+}
+
+.custom-dialog .button-bar {
+    -fx-padding: 20px 0 0 0;
 }

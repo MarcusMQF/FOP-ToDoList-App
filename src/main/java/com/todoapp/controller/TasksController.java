@@ -6,11 +6,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.GridPane;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Insets;
+import java.time.LocalDate;
+import javafx.scene.Node;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.CheckBox;
+import javafx.event.ActionEvent;
 
 import com.todoapp.model.Task;
 import com.todoapp.TaskManager;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,6 +33,7 @@ public class TasksController {
     @FXML private TableColumn<Task, String> statusColumn;
     @FXML private ComboBox<String> filterCategory;
     @FXML private ComboBox<String> sortBy;
+    @FXML private TableColumn<Task, Integer> noColumn;
     
     private TaskManager taskManager;
 
@@ -38,6 +45,26 @@ public class TasksController {
     }
 
     private void setupTable() {
+        // Add No column at the beginning
+        noColumn.setCellValueFactory(column -> 
+            new SimpleObjectProperty<>(tasksTable.getItems().indexOf(column.getValue()) + 1));
+        noColumn.setCellFactory(col -> {
+            TableCell<Task, Integer> cell = new TableCell<Task, Integer>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(String.valueOf(item));
+                    }
+                    setAlignment(javafx.geometry.Pos.CENTER);
+                }
+            };
+            cell.setAlignment(javafx.geometry.Pos.CENTER);
+            return cell;
+        });
+
         // Set cell factories for all columns
         taskTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         taskTitleColumn.setCellFactory(col -> createCenteredCell());
@@ -82,39 +109,103 @@ public class TasksController {
     private void showAddTaskDialog() {
         Dialog<Task> dialog = new Dialog<>();
         dialog.setTitle("Add New Task");
+        dialog.getDialogPane().getStyleClass().add("custom-dialog");
         
-        // Create dialog content
         GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(15);
+        grid.setPadding(new Insets(20));
+
         TextField titleField = new TextField();
         TextArea descField = new TextArea();
         DatePicker dueDatePicker = new DatePicker();
+        
+        ComboBox<String> categoryBox = new ComboBox<>();
+        categoryBox.getItems().addAll("Work", "Personal", "Homework");
+        
         ComboBox<String> priorityBox = new ComboBox<>();
         priorityBox.getItems().addAll("High", "Medium", "Low");
         
+        CheckBox isRecurringBox = new CheckBox("Recurring Task");
+        ComboBox<String> recurringIntervalBox = new ComboBox<>();
+        recurringIntervalBox.getItems().addAll("Daily", "Weekly", "Monthly");
+        recurringIntervalBox.setDisable(true);
+        
+        isRecurringBox.setOnAction(e -> 
+            recurringIntervalBox.setDisable(!isRecurringBox.isSelected()));
+
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
+        errorLabel.setVisible(false);
+
+        // Style the input fields
+        titleField.getStyleClass().add("custom-dialog-field");
+        descField.getStyleClass().add("custom-dialog-field");
+        dueDatePicker.getStyleClass().add("custom-dialog-field");
+        categoryBox.getStyleClass().add("custom-dialog-field");
+        priorityBox.getStyleClass().add("custom-dialog-field");
+        recurringIntervalBox.getStyleClass().add("custom-dialog-field");
+
         grid.add(new Label("Title:"), 0, 0);
         grid.add(titleField, 1, 0);
         grid.add(new Label("Description:"), 0, 1);
         grid.add(descField, 1, 1);
-        grid.add(new Label("Due Date:"), 0, 2);
-        grid.add(dueDatePicker, 1, 2);
-        grid.add(new Label("Priority:"), 0, 3);
-        grid.add(priorityBox, 1, 3);
-        
+        grid.add(new Label("Category:"), 0, 2);
+        grid.add(categoryBox, 1, 2);
+        grid.add(new Label("Due Date:"), 0, 3);
+        grid.add(dueDatePicker, 1, 3);
+        grid.add(new Label("Priority:"), 0, 4);
+        grid.add(priorityBox, 1, 4);
+        grid.add(isRecurringBox, 0, 5);
+        grid.add(recurringIntervalBox, 1, 5);
+        grid.add(errorLabel, 0, 6, 2, 1);
+
         dialog.getDialogPane().setContent(grid);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        
-        dialog.setResultConverter(buttonType -> {
-            if (buttonType == ButtonType.OK) {
-                Task newTask = new Task();
-                newTask.setTitle(titleField.getText());
-                newTask.setDescription(descField.getText());
-                newTask.setDueDate(dueDatePicker.getValue());
-                newTask.setPriority(priorityBox.getValue());
-                return newTask;
+        ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
+
+        Node addButton = dialog.getDialogPane().lookupButton(addButtonType);
+        addButton.addEventFilter(ActionEvent.ANY, event -> {
+            // Validate all fields
+            if (titleField.getText().trim().isEmpty() || 
+                descField.getText().trim().isEmpty() || 
+                categoryBox.getValue() == null ||
+                dueDatePicker.getValue() == null || 
+                priorityBox.getValue() == null ||
+                (isRecurringBox.isSelected() && recurringIntervalBox.getValue() == null)) {
+                
+                errorLabel.setText("All fields are required!");
+                errorLabel.setVisible(true);
+                event.consume();
+                return;
+            }
+
+            // Validate due date
+            if (dueDatePicker.getValue().isBefore(LocalDate.now())) {
+                errorLabel.setText("Due date cannot be in the past!");
+                errorLabel.setVisible(true);
+                event.consume();
+                return;
+            }
+        });
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == addButtonType) {
+                Task task = new Task();
+                task.setTitle(titleField.getText().trim());
+                task.setDescription(descField.getText().trim());
+                task.setCategory(categoryBox.getValue());
+                task.setDueDate(dueDatePicker.getValue());
+                task.setPriority(priorityBox.getValue());
+                task.setRecurring(isRecurringBox.isSelected());
+                if (isRecurringBox.isSelected()) {
+                    task.setRecurringInterval(recurringIntervalBox.getValue());
+                }
+                return task;
             }
             return null;
         });
-        
+
         dialog.showAndWait().ifPresent(task -> {
             try {
                 taskManager.addTask(task);
@@ -233,38 +324,110 @@ public class TasksController {
     private void showEditTaskDialog(Task task) {
         Dialog<Task> dialog = new Dialog<>();
         dialog.setTitle("Edit Task");
+        dialog.getDialogPane().getStyleClass().add("custom-dialog");
         
         GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(15);
+        grid.setPadding(new Insets(20));
+
         TextField titleField = new TextField(task.getTitle());
         TextArea descField = new TextArea(task.getDescription());
         DatePicker dueDatePicker = new DatePicker(task.getDueDate());
+        
+        ComboBox<String> categoryBox = new ComboBox<>();
+        categoryBox.getItems().addAll("Work", "Personal", "Homework");
+        categoryBox.setValue(task.getCategory());
+        
         ComboBox<String> priorityBox = new ComboBox<>();
         priorityBox.getItems().addAll("High", "Medium", "Low");
         priorityBox.setValue(task.getPriority());
         
+        CheckBox isRecurringBox = new CheckBox("Recurring Task");
+        isRecurringBox.setSelected(task.isRecurring());
+        ComboBox<String> recurringIntervalBox = new ComboBox<>();
+        recurringIntervalBox.getItems().addAll("Daily", "Weekly", "Monthly");
+        recurringIntervalBox.setValue(task.getRecurringInterval());
+        recurringIntervalBox.setDisable(!task.isRecurring());
+        
+        isRecurringBox.setOnAction(e -> 
+            recurringIntervalBox.setDisable(!isRecurringBox.isSelected()));
+
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
+        errorLabel.setVisible(false);
+
+        // Style the input fields
+        titleField.getStyleClass().add("custom-dialog-field");
+        descField.getStyleClass().add("custom-dialog-field");
+        dueDatePicker.getStyleClass().add("custom-dialog-field");
+        categoryBox.getStyleClass().add("custom-dialog-field");
+        priorityBox.getStyleClass().add("custom-dialog-field");
+        recurringIntervalBox.getStyleClass().add("custom-dialog-field");
+
         grid.add(new Label("Title:"), 0, 0);
         grid.add(titleField, 1, 0);
         grid.add(new Label("Description:"), 0, 1);
         grid.add(descField, 1, 1);
-        grid.add(new Label("Due Date:"), 0, 2);
-        grid.add(dueDatePicker, 1, 2);
-        grid.add(new Label("Priority:"), 0, 3);
-        grid.add(priorityBox, 1, 3);
-        
+        grid.add(new Label("Category:"), 0, 2);
+        grid.add(categoryBox, 1, 2);
+        grid.add(new Label("Due Date:"), 0, 3);
+        grid.add(dueDatePicker, 1, 3);
+        grid.add(new Label("Priority:"), 0, 4);
+        grid.add(priorityBox, 1, 4);
+        grid.add(isRecurringBox, 0, 5);
+        grid.add(recurringIntervalBox, 1, 5);
+        grid.add(errorLabel, 0, 6, 2, 1);
+
         dialog.getDialogPane().setContent(grid);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        
-        dialog.setResultConverter(buttonType -> {
-            if (buttonType == ButtonType.OK) {
-                task.setTitle(titleField.getText());
-                task.setDescription(descField.getText());
+        ButtonType editButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(editButtonType, ButtonType.CANCEL);
+
+        Node editButton = dialog.getDialogPane().lookupButton(editButtonType);
+        editButton.getStyleClass().add("button");
+        Button cancelButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+        cancelButton.getStyleClass().addAll("button", "cancel");
+
+        editButton.addEventFilter(ActionEvent.ANY, event -> {
+            // Validate all fields
+            if (titleField.getText().trim().isEmpty() || 
+                descField.getText().trim().isEmpty() || 
+                categoryBox.getValue() == null ||
+                dueDatePicker.getValue() == null || 
+                priorityBox.getValue() == null ||
+                (isRecurringBox.isSelected() && recurringIntervalBox.getValue() == null)) {
+                
+                errorLabel.setText("All fields are required!");
+                errorLabel.setVisible(true);
+                event.consume();
+                return;
+            }
+
+            // Validate due date
+            if (dueDatePicker.getValue().isBefore(LocalDate.now())) {
+                errorLabel.setText("Due date cannot be in the past!");
+                errorLabel.setVisible(true);
+                event.consume();
+                return;
+            }
+        });
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == editButtonType) {
+                task.setTitle(titleField.getText().trim());
+                task.setDescription(descField.getText().trim());
+                task.setCategory(categoryBox.getValue());
                 task.setDueDate(dueDatePicker.getValue());
                 task.setPriority(priorityBox.getValue());
+                task.setRecurring(isRecurringBox.isSelected());
+                if (isRecurringBox.isSelected()) {
+                    task.setRecurringInterval(recurringIntervalBox.getValue());
+                }
                 return task;
             }
             return null;
         });
-        
+
         dialog.showAndWait().ifPresent(updatedTask -> {
             try {
                 taskManager.updateTask(updatedTask);

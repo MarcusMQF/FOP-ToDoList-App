@@ -5,48 +5,54 @@
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.todoapp.controller.AnalyticsController"
-      spacing="10" styleClass="dashboard-container">
+      spacing="20" styleClass="dashboard-container">
     
     <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
+        <Insets top="30" right="30" bottom="30" left="30"/>
     </padding>
 
     <!-- Analytics Content -->
-    <VBox styleClass="table-container" VBox.vgrow="ALWAYS">
-        <!-- Progress Indicators Row -->
-        <HBox spacing="20" alignment="CENTER" styleClass="progress-container">
-            <VBox alignment="CENTER" styleClass="progress-card">
-                <ProgressIndicator fx:id="totalTasksProgress" styleClass="progress-indicator"/>
+    <VBox styleClass="table-container" VBox.vgrow="ALWAYS" spacing="30">
+        <!-- Progress Indicators Section -->
+        <GridPane alignment="CENTER" hgap="40" vgap="40" styleClass="progress-container">
+            <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="50"/>
+                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="50"/>
+            </columnConstraints>
+            
+            <!-- Total Tasks Card -->
+            <VBox alignment="CENTER" styleClass="progress-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <ProgressIndicator fx:id="totalTasksProgress" styleClass="progress-indicator-large"/>
                 <Label fx:id="totalTasksLabel" styleClass="progress-label"/>
                 <Label text="Total Tasks" styleClass="metric-label"/>
             </VBox>
             
-            <VBox alignment="CENTER" styleClass="progress-card">
-                <ProgressIndicator fx:id="incompleteTasksProgress" styleClass="progress-indicator"/>
+            <!-- Incomplete Tasks Card -->
+            <VBox alignment="CENTER" styleClass="progress-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <ProgressIndicator fx:id="incompleteTasksProgress" styleClass="progress-indicator-large"/>
                 <Label fx:id="incompleteTasksLabel" styleClass="progress-label"/>
                 <Label text="Incomplete Tasks" styleClass="metric-label"/>
             </VBox>
             
-            <VBox alignment="CENTER" styleClass="progress-card">
-                <ProgressIndicator fx:id="completedTasksProgress" styleClass="progress-indicator"/>
+            <!-- Completed Tasks Card -->
+            <VBox alignment="CENTER" styleClass="progress-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <ProgressIndicator fx:id="completedTasksProgress" styleClass="progress-indicator-large"/>
                 <Label fx:id="completedTasksLabel" styleClass="progress-label"/>
                 <Label text="Completed Tasks" styleClass="metric-label"/>
             </VBox>
             
-            <VBox alignment="CENTER" styleClass="progress-card">
-                <ProgressIndicator fx:id="completionRateProgress" styleClass="progress-indicator"/>
+            <!-- Completion Rate Card -->
+            <VBox alignment="CENTER" styleClass="progress-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <ProgressIndicator fx:id="completionRateProgress" styleClass="progress-indicator-large"/>
                 <Label fx:id="completionRateLabel" styleClass="progress-label"/>
                 <Label text="Completion Rate" styleClass="metric-label"/>
             </VBox>
-        </HBox>
+        </GridPane>
 
         <!-- Category Distribution -->
-        <VBox spacing="10" styleClass="category-container">
-            <padding>
-                <Insets top="20" right="0" bottom="0" left="0"/>
-            </padding>
-            <Label text="Tasks by Category" styleClass="section-title"/>
-            <FlowPane fx:id="categoryContainer" hgap="10" vgap="10"/>
+        <VBox spacing="40" styleClass="category-container" alignment="CENTER">
+            <Label text="Tasks by Category" style="-fx-font-size: 20px; -fx-font-weight: bold;" styleClass="section-title"/>
+            <FlowPane fx:id="categoryContainer" hgap="80" vgap="80" alignment="CENTER"/>
         </VBox>
     </VBox>
 </VBox> 

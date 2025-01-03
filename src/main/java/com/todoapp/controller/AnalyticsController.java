@@ -6,6 +6,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import java.sql.SQLException;
 import java.util.Map;
+import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 
 public class AnalyticsController {
     @FXML private ProgressIndicator totalTasksProgress;
@@ -62,6 +64,7 @@ public class AnalyticsController {
 
     private VBox createCategoryCard(String category, int count, int total) {
         VBox card = new VBox(10);
+        card.setAlignment(Pos.CENTER);
         card.getStyleClass().add("category-card");
         
         ProgressIndicator progress = new ProgressIndicator((double) count / total);
@@ -69,6 +72,7 @@ public class AnalyticsController {
         
         Label nameLabel = new Label(category);
         nameLabel.getStyleClass().add("category-name");
+        VBox.setMargin(nameLabel, new Insets(-5, 0, 0, 0));
         
         Label countLabel = new Label(String.valueOf(count));
         countLabel.getStyleClass().add("category-count");
