@@ -1,96 +1,56 @@
-# ToDo List App with Java 🚀
+# 📝 To-Do List App
 
-## Description 📝
+A simple and intuitive Java-based ToDo application to help you manage your tasks efficiently.
 
-The **Java Todo App** is a desktop application built using **JavaFX** and **SQLite**. It allows users to manage their tasks effectively with a user-friendly graphical interface. The app includes features like user registration, login, task creation, task management, and more.
+---
 
-## Technology Stack 💻
+## ✨ Features
+- **Task Management**: Add, edit, and delete tasks with ease.
+- **User Authentication**: Secure login and registration system.
+- **Responsive Design**: Works seamlessly on different screen sizes.
+- **Database Integration**: Uses SQLite for persistent data storage.
 
-- **JavaFX 17.0.13**: For the graphical user interface (GUI).
-- **SQLite**: For database storage.
-- **FXML**: For defining the UI layout.
+---
 
-## Setup Instructions 🛠️
+## 🔥 Application
 
-### **Prerequisites**
-1. **Java Development Kit (JDK) 17 or later**:
-   - Download and install the JDK from [Oracle](https://www.oracle.com/java/technologies/javase-downloads.html) or [Adoptium](https://adoptium.net/).
-2. **Visual Studio Code (VS Code)**:
-   - Download and install VS Code from [here](https://code.visualstudio.com/).
-3. **Java Extensions for VS Code**:
-   - Install the following extensions in VS Code:
-     - **Language Support for Java™ by Red Hat**
-     - **Debugger for Java**
-     - **Java Extension Pack** (optional, but recommended).
+### Login Screen
+![LoginPage](https://github.com/user-attachments/assets/b90c6399-9040-478d-aa7a-cc7640cb612f)
 
-### **Clone the Repository**
-1. Open a terminal or command prompt.
-2. Run the following command to clone the repository:
-   ```bash
-   git clone https://github.com/your-repo-url/java-todo-app.git
-   ```
-3. Open project in Vs Code
+### Registration Screen
+![RegisterPage](https://github.com/user-attachments/assets/9a88ccb1-1c4c-47de-94ed-88b178bb47a9)
 
-## Running the Application ▶️
+### Task Management Screen
+![MainPage](https://github.com/user-attachments/assets/0c7928c8-f2a0-4f4b-af7d-d185236642af)
 
-### **Set Up the Database**
-1. SQLite database file (todo.db) included in project
-2. Verify database location:
-   - Should be in `src/main/resources/db/todo.db`
+---
 
-### **Configure JavaFX**
-1. Project pre-configured with JavaFX 17.0.13
-2. Verify lib folder contains required .jar files:
-   - javafx.controls.jar
-   - javafx.fxml.jar
+## 🛠️ Installation
 
-### **Run the Application**
-1. Open ToDoApp.java in VS Code
-2. Run application:
-   - Press F5 
-   - OR: Click Run > Start Debugging
-3. Login/Register window will appear to access main application
+### Prerequisites
+- **Java Runtime Environment (JRE)**: Ensure you have Java 17 or later installed. Download it from [Adoptium](https://adoptium.net/).
+- **JavaFX Runtime** (if not bundled): Download the JavaFX SDK from [Gluon](https://gluonhq.com/products/javafx/).
 
-## Contribution Guidelines 📜
+### Download the Application
+1. Go to the [Releases page](https://github.com/your-username/your-repo/releases).
+2. Download the latest `.exe` file (e.g., `ToDoApp.exe`).
 
-1. Fork the Repository
-  - Fork repository to your GitHub account
+---
 
-2. Create a New Branch
-  - Create branch for your feature:
-    ```bash
-    git checkout -b feature/your-feature-name
-    ```
+## 🚀 Usage
 
-3. Make Your Changes
-  - Implement changes
-  - Test thoroughly before committing
+### Running the Application
+1. Double-click the downloaded `.exe` file to launch the application.
+2. Log in with your credentials or register a new account.
+3. Add, edit, or delete tasks as needed.
 
-4. Commit Your Changes
-  - Add descriptive commit message:
-    ```bash
-    git commit -m "Add your commit message"
-    ```
+### Command Line (Optional)
+If you prefer to run the application from the command line:
+```bash
+java --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml -jar ToDoApp.jar
+```
+---
 
-5. Push to the Branch
-  - Push changes to your branch:
-    ```bash
-    git push origin feature/your-feature-name
-    ```
-
-6. Submit a Pull Request
-  - Open pull request on GitHub
-  - Provide clear description of changes
-
-## Contributors 🧑‍🚀
-
-* MAH QING FUNG
-* HANA BINTI BADRUL HISHAM
-* KUEH ZHI LING
-* SAJEEV A/L JAYAPARAGASAM
-* VERONICA YAPP YEE HONG
-* JASMINE TEO GIE MING
-
-## License
+## 📜 License
 
 This project is licensed under the [MIT License](LICENSE).
