@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.todoapp.controller.AnalyticsController"
+      spacing="10" styleClass="dashboard-container">
+    
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Analytics Content -->
+    <VBox styleClass="table-container" VBox.vgrow="ALWAYS">
+        <!-- Progress Indicators Row -->
+        <HBox spacing="20" alignment="CENTER" styleClass="progress-container">
+            <VBox alignment="CENTER" styleClass="progress-card">
+                <ProgressIndicator fx:id="totalTasksProgress" styleClass="progress-indicator"/>
+                <Label fx:id="totalTasksLabel" styleClass="progress-label"/>
+                <Label text="Total Tasks" styleClass="metric-label"/>
+            </VBox>
+            
+            <VBox alignment="CENTER" styleClass="progress-card">
+                <ProgressIndicator fx:id="incompleteTasksProgress" styleClass="progress-indicator"/>
+                <Label fx:id="incompleteTasksLabel" styleClass="progress-label"/>
+                <Label text="Incomplete Tasks" styleClass="metric-label"/>
+            </VBox>
+            
+            <VBox alignment="CENTER" styleClass="progress-card">
+                <ProgressIndicator fx:id="completedTasksProgress" styleClass="progress-indicator"/>
+                <Label fx:id="completedTasksLabel" styleClass="progress-label"/>
+                <Label text="Completed Tasks" styleClass="metric-label"/>
+            </VBox>
+            
+            <VBox alignment="CENTER" styleClass="progress-card">
+                <ProgressIndicator fx:id="completionRateProgress" styleClass="progress-indicator"/>
+                <Label fx:id="completionRateLabel" styleClass="progress-label"/>
+                <Label text="Completion Rate" styleClass="metric-label"/>
+            </VBox>
+        </HBox>
+
+        <!-- Category Distribution -->
+        <VBox spacing="10" styleClass="category-container">
+            <padding>
+                <Insets top="20" right="0" bottom="0" left="0"/>
+            </padding>
+            <Label text="Tasks by Category" styleClass="section-title"/>
+            <FlowPane fx:id="categoryContainer" hgap="10" vgap="10"/>
+        </VBox>
+    </VBox>
+</VBox> 

@@ -136,7 +136,7 @@ public class MainController {
 
     @FXML
     private void showAnalytics() {
-        loadView("/fxml/views/analytics.fxml", null);
+        loadView("/fxml/views/analytics.fxml", AnalyticsController.class);
     }
 
     @FXML
@@ -199,6 +199,8 @@ public class MainController {
                     ((DashboardController) controller).initialize(taskManager);
                 } else if (controller instanceof TasksController) {
                     ((TasksController) controller).initialize(taskManager);
+                } else if (controller instanceof AnalyticsController) {
+                    ((AnalyticsController) controller).initialize(taskManager);
                 }
             }
             setContent(view);
