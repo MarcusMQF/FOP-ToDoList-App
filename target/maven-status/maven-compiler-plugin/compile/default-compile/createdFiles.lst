@@ -9,6 +9,7 @@ com\todoapp\controller\LoginController.class
 com\todoapp\util\DatabaseConnection.class
 com\todoapp\controller\AnalyticsController.class
 com\todoapp\controller\TasksController$3.class
+com\todoapp\controller\TasksController$5.class
 com\todoapp\controller\MainController$1.class
 com\todoapp\dao\TaskDAOImpl.class
 com\todoapp\dao\UserDAOImpl.class
