@@ -1,0 +1,76 @@
+.analytics-scroll {
+    -fx-background-color: #aec0d3;
+}
+
+.analytics-container {
+    -fx-background-color: #aec0d3;
+}
+
+.summary-cards {
+    -fx-alignment: center;
+}
+
+.summary-card {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-pref-width: 250px;
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-background-radius: 10;
+}
+
+.card-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #6c757d;
+}
+
+.card-value {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.completion-progress {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 8px;
+    -fx-accent: #4CAF50;
+}
+
+.chart-card {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-spacing: 10;
+}
+
+.chart-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 0 0 10 0;
+    -fx-alignment: center;
+}
+
+.distribution-chart {
+    -fx-pref-height: 400px;
+    -fx-background-color: white;
+    -fx-padding: 10px;
+}
+
+.category-chart {
+    -fx-pref-height: 400px;
+    -fx-background-color: white;
+    -fx-padding: 10px;
+}
+
+.default-color0.chart-pie { -fx-pie-color: #4CAF50; }
+.default-color1.chart-pie { -fx-pie-color: #FFC107; }
+
+.default-color0.chart-bar { -fx-bar-fill: #3498db; } 
+
+.chart-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 0);
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+} 

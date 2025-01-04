@@ -1,58 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.todoapp.controller.AnalyticsController"
-      spacing="20" styleClass="dashboard-container">
-    
-    <padding>
-        <Insets top="30" right="30" bottom="30" left="30"/>
-    </padding>
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.todoapp.controller.AnalyticsController"
+          fitToWidth="true"
+          styleClass="analytics-scroll"
+          style="-fx-background: #f8f9fa; -fx-border-color: #f8f9fa;"
+          stylesheets="@../../css/analytics.css">
+          
+    <VBox spacing="30" styleClass="analytics-container">
+        <padding>
+            <Insets top="30" right="30" bottom="30" left="30"/>
+        </padding>
 
-    <!-- Analytics Content -->
-    <VBox styleClass="table-container" VBox.vgrow="ALWAYS" spacing="30">
-        <!-- Progress Indicators Section -->
-        <GridPane alignment="CENTER" hgap="40" vgap="40" styleClass="progress-container">
-            <columnConstraints>
-                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="50"/>
-                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" percentWidth="50"/>
-            </columnConstraints>
-            
-            <!-- Total Tasks Card -->
-            <VBox alignment="CENTER" styleClass="progress-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                <ProgressIndicator fx:id="totalTasksProgress" styleClass="progress-indicator-large"/>
-                <Label fx:id="totalTasksLabel" styleClass="progress-label"/>
-                <Label text="Total Tasks" styleClass="metric-label"/>
+        <!-- Summary Cards -->
+        <HBox spacing="20" styleClass="summary-cards">
+            <VBox styleClass="summary-card">
+                <Label text="Total Tasks" styleClass="card-title"/>
+                <Label fx:id="totalTasksValue" styleClass="card-value"/>
             </VBox>
             
-            <!-- Incomplete Tasks Card -->
-            <VBox alignment="CENTER" styleClass="progress-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                <ProgressIndicator fx:id="incompleteTasksProgress" styleClass="progress-indicator-large"/>
-                <Label fx:id="incompleteTasksLabel" styleClass="progress-label"/>
-                <Label text="Incomplete Tasks" styleClass="metric-label"/>
+            <VBox styleClass="summary-card">
+                <Label text="Completed Tasks" styleClass="card-title"/>
+                <Label fx:id="completedTasksValue" styleClass="card-value"/>
             </VBox>
             
-            <!-- Completed Tasks Card -->
-            <VBox alignment="CENTER" styleClass="progress-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                <ProgressIndicator fx:id="completedTasksProgress" styleClass="progress-indicator-large"/>
-                <Label fx:id="completedTasksLabel" styleClass="progress-label"/>
-                <Label text="Completed Tasks" styleClass="metric-label"/>
+            <VBox styleClass="summary-card">
+                <Label text="Completion Rate" styleClass="card-title"/>
+                <Label fx:id="completionRateValue" styleClass="card-value"/>
+                <ProgressBar fx:id="completionProgressBar" styleClass="completion-progress"/>
             </VBox>
-            
-            <!-- Completion Rate Card -->
-            <VBox alignment="CENTER" styleClass="progress-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                <ProgressIndicator fx:id="completionRateProgress" styleClass="progress-indicator-large"/>
-                <Label fx:id="completionRateLabel" styleClass="progress-label"/>
-                <Label text="Completion Rate" styleClass="metric-label"/>
-            </VBox>
-        </GridPane>
+        </HBox>
 
-        <!-- Category Distribution -->
-        <VBox spacing="40" styleClass="category-container" alignment="CENTER">
-            <Label text="Tasks by Category" style="-fx-font-size: 20px; -fx-font-weight: bold;" styleClass="section-title"/>
-            <FlowPane fx:id="categoryContainer" hgap="80" vgap="80" alignment="CENTER"/>
-        </VBox>
+        <!-- Charts Section -->
+        <HBox spacing="20" styleClass="charts-container">
+            <!-- Task Distribution Chart -->
+            <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                <VBox alignment="CENTER">
+                    <Label text="Task Distribution" styleClass="chart-title"/>
+                </VBox>
+                <PieChart fx:id="taskDistributionChart" 
+                         legendVisible="true"
+                         labelsVisible="true"
+                         styleClass="distribution-chart"/>
+            </VBox>
+
+            <!-- Category Distribution Chart -->
+            <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                <VBox alignment="CENTER">
+                    <Label text="Tasks by Category" styleClass="chart-title"/>
+                </VBox>
+                <BarChart fx:id="categoryChart" 
+                         legendVisible="false"
+                         styleClass="category-chart">
+                    <xAxis>
+                        <CategoryAxis label="Categories"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Number of Tasks"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+        </HBox>
     </VBox>
-</VBox> 
+</ScrollPane> 

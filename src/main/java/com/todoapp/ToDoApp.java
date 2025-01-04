@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class ToDoApp extends Application {
@@ -20,6 +21,8 @@ public class ToDoApp extends Application {
         primaryStage.setHeight(600);
         primaryStage.setMinWidth(900);
         primaryStage.setMinHeight(600);
+
+        primaryStage.getIcons().add(new Image("images/todo-icon.png"));
         
         primaryStage.setTitle("ToDo List App - Login");
         primaryStage.setScene(scene);
