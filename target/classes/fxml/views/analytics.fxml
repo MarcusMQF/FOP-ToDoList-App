@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
+
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.todoapp.controller.AnalyticsController"
+          fitToWidth="true"
+          styleClass="analytics-scroll"
+          style="-fx-background: #f8f9fa; -fx-border-color: #f8f9fa;"
+          stylesheets="@../../css/analytics.css">
+          
+    <VBox spacing="30" styleClass="analytics-container">
+        <padding>
+            <Insets top="30" right="30" bottom="30" left="30"/>
+        </padding>
+
+        <!-- Summary Cards -->
+        <HBox spacing="20" styleClass="summary-cards">
+            <VBox styleClass="summary-card">
+                <Label text="Total Tasks" styleClass="card-title"/>
+                <Label fx:id="totalTasksValue" styleClass="card-value"/>
+            </VBox>
+            
+            <VBox styleClass="summary-card">
+                <Label text="Completed Tasks" styleClass="card-title"/>
+                <Label fx:id="completedTasksValue" styleClass="card-value"/>
+            </VBox>
+            
+            <VBox styleClass="summary-card">
+                <Label text="Completion Rate" styleClass="card-title"/>
+                <Label fx:id="completionRateValue" styleClass="card-value"/>
+                <ProgressBar fx:id="completionProgressBar" styleClass="completion-progress"/>
+            </VBox>
+        </HBox>
+
+        <!-- Charts Section -->
+        <HBox spacing="20" styleClass="charts-container">
+            <!-- Task Distribution Chart -->
+            <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                <VBox alignment="CENTER">
+                    <Label text="Task Distribution" styleClass="chart-title"/>
+                </VBox>
+                <PieChart fx:id="taskDistributionChart" 
+                         legendVisible="true"
+                         labelsVisible="true"
+                         styleClass="distribution-chart"/>
+            </VBox>
+
+            <!-- Category Distribution Chart -->
+            <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                <VBox alignment="CENTER">
+                    <Label text="Tasks by Category" styleClass="chart-title"/>
+                </VBox>
+                <BarChart fx:id="categoryChart" 
+                         legendVisible="false"
+                         styleClass="category-chart">
+                    <xAxis>
+                        <CategoryAxis label="Categories"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Number of Tasks"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+        </HBox>
+    </VBox>
+</ScrollPane> 

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.Text?>
+
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.todoapp.controller.RegisterController"
+      styleClass="main-container">
+
+    <!-- Left Panel -->
+    <VBox styleClass="left-panel" HBox.hgrow="ALWAYS">
+        <VBox alignment="CENTER" styleClass="left-content" VBox.vgrow="ALWAYS">
+            <!-- App Logo Section -->
+            <VBox alignment="CENTER" styleClass="logo-container">
+                <ImageView fitHeight="70" fitWidth="70" styleClass="app-logo">
+                    <Image url="@../images/todo-icon.png"/>
+                </ImageView>
+                
+                <VBox alignment="CENTER" styleClass="brand-container">
+                    <Text styleClass="brand-title" text="To-Do List App"/>
+                    <Text styleClass="brand-slogan" text="Organize Your Life Efficiently"/>
+                </VBox>
+            </VBox>
+            
+            <!-- Feature List Section -->
+            <VBox spacing="20" styleClass="feature-list">
+                <HBox styleClass="feature-item">
+                    <StackPane styleClass="feature-icon-container">
+                        <ImageView fitHeight="24" fitWidth="24">
+                            <Image url="@../images/check-circle.png"/>
+                        </ImageView>
+                    </StackPane>
+                    <Text styleClass="feature-text" text="Track your daily tasks"/>
+                </HBox>
+                
+                <HBox styleClass="feature-item">
+                    <StackPane styleClass="feature-icon-container">
+                        <ImageView fitHeight="24" fitWidth="24">
+                            <Image url="@../images/calendar.png"/>
+                        </ImageView>
+                    </StackPane>
+                    <Text styleClass="feature-text" text="Set reminders and due dates"/>
+                </HBox>
+                
+                <HBox styleClass="feature-item">
+                    <StackPane styleClass="feature-icon-container">
+                        <ImageView fitHeight="24" fitWidth="24">
+                            <Image url="@../images/chart.png"/>
+                        </ImageView>
+                    </StackPane>
+                    <Text styleClass="feature-text" text="Track your progress"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </VBox>
+
+    <!-- Right Panel -->
+    <VBox styleClass="right-panel" HBox.hgrow="ALWAYS">
+        <Text styleClass="welcome-text" text="Create Your Account"/>
+        
+        <VBox styleClass="form-container">
+            <TextField fx:id="usernameField" promptText="Username" styleClass="input-field"/>
+            <TextField fx:id="emailField" promptText="Email" styleClass="input-field"/>
+            <PasswordField fx:id="passwordField" promptText="Password" styleClass="input-field"/>
+            <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" styleClass="input-field"/>
+            
+            <Button text="Register" onAction="#handleRegister" styleClass="primary-button"/>
+            
+            <HBox alignment="CENTER" styleClass="login-link-container">
+                <Label text="Already have an account?"/>
+                <Hyperlink text="Login" onAction="#switchToLogin" styleClass="link-button"/>
+            </HBox>
+        </VBox>
+        
+        <Label fx:id="errorLabel" styleClass="error-label" visible="false"/>
+    </VBox>
+</HBox>

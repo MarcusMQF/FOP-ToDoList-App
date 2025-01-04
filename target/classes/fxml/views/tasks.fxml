@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.todoapp.controller.TasksController"
+      spacing="10" styleClass="dashboard-container">
+    
+    <VBox styleClass="table-container" VBox.vgrow="ALWAYS">
+        <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="action-button-container">
+            <ComboBox fx:id="filterCategory" promptText="Filter by Category"/>
+            <ComboBox fx:id="sortBy" promptText="Sort by"/>
+            <Button text="Add Task" onAction="#showAddTaskDialog"/>
+        </HBox>
+        
+        <TableView fx:id="tasksTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="noColumn" text="No" prefWidth="50"/>
+                <TableColumn fx:id="taskTitleColumn" text="Title" prefWidth="250"/>
+                <TableColumn fx:id="taskDescriptionColumn" text="Description" prefWidth="300"/>
+                <TableColumn fx:id="dueDateColumn" text="Due Date" prefWidth="120"/>
+                <TableColumn fx:id="categoryColumn" text="Category" prefWidth="100"/>
+                <TableColumn fx:id="priorityColumn" text="Priority" prefWidth="100"/>
+                <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+</VBox> 

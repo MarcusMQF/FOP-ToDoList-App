@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.todoapp.controller.MainController"
+      styleClass="main-container">
+
+    <!-- Sidebar -->
+    <VBox styleClass="sidebar">
+        <!-- Profile Section with centered content and proper padding -->
+        <VBox styleClass="profile-section" alignment="CENTER">
+            <padding>
+                <Insets top="20" right="15" bottom="20" left="15"/>
+            </padding>
+            <Label text="Welcome," styleClass="welcome-text"/>
+            <Label fx:id="userNameLabel" styleClass="username-label"/>
+        </VBox>
+
+        <!-- Navigation Section -->
+        <VBox styleClass="nav-section">
+            <Button text="Dashboard" onAction="#showDashboard" styleClass="nav-button"/>
+            <Button text="Tasks" onAction="#showTasks" styleClass="nav-button"/>
+            <Button text="Data Analytics" onAction="#showAnalytics" styleClass="nav-button"/>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS"/> <!-- Spacer -->
+
+        <!-- Logout Button -->
+        <Button text="Logout" onAction="#handleLogout" styleClass="logout-button"/>
+        
+        <!-- Delete Account Button -->
+        <Button text="Delete Account" onAction="#handleDeleteAccount" styleClass="logout-button"/>
+    </VBox>
+
+    <!-- Main Content Area -->
+    <VBox HBox.hgrow="ALWAYS" styleClass="content-area">
+        <!-- Search Bar -->
+        <HBox styleClass="search-bar" alignment="CENTER_RIGHT" spacing="10">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <TextField fx:id="searchField" promptText="Search tasks..." 
+                      styleClass="search-input" HBox.hgrow="ALWAYS"/>
+            <Button text="Search" onAction="#handleSearch" 
+                    styleClass="search-button"/>
+        </HBox>
+
+        <!-- Content Stack -->
+        <VBox fx:id="contentArea" VBox.vgrow="ALWAYS"/>
+    </VBox>
+</HBox>
