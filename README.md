@@ -9,6 +9,7 @@ A simple and intuitive Java-based ToDo application to help you manage your tasks
 - **User Authentication**: Secure login and registration system.
 - **Responsive Design**: Works seamlessly on different screen sizes.
 - **Database Integration**: Uses SQLite for persistent data storage.
+- **Email Notification**: Remind user their tasks that due in 24 Hour
 
 ---
 
