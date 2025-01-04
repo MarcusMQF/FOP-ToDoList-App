@@ -44,6 +44,10 @@ public class DashboardController {
 
     public void initialize(TaskManager taskManager) {
         this.taskManager = taskManager;
+        
+        // Remove any programmatic column width settings
+        recentTasksTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        
         setupTableColumns();
         loadDashboardData();
     }

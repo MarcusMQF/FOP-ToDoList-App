@@ -16,12 +16,14 @@
         <TableView fx:id="tasksTable" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="noColumn" text="No" prefWidth="50"/>
-                <TableColumn fx:id="taskTitleColumn" text="Title" prefWidth="250"/>
-                <TableColumn fx:id="taskDescriptionColumn" text="Description" prefWidth="300"/>
-                <TableColumn fx:id="dueDateColumn" text="Due Date" prefWidth="120"/>
-                <TableColumn fx:id="categoryColumn" text="Category" prefWidth="100"/>
+                <TableColumn fx:id="taskTitleColumn" text="Title" prefWidth="150"/>
+                <TableColumn fx:id="taskDescriptionColumn" text="Description" prefWidth="250"/>
+                <TableColumn fx:id="dueDateColumn" text="Due Date" prefWidth="80"/>
+                <TableColumn fx:id="categoryColumn" text="Category" prefWidth="150"/>
                 <TableColumn fx:id="priorityColumn" text="Priority" prefWidth="100"/>
+                <TableColumn fx:id="dependsOnColumn" text="Depends On" prefWidth="150"/>
                 <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="300"/>
             </columns>
         </TableView>
     </VBox>

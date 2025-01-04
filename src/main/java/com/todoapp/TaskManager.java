@@ -110,13 +110,44 @@ public class TaskManager {
     public boolean wouldCreateCircularDependency(Integer taskId, Integer dependencyId) throws SQLException {
         if (taskId == null || dependencyId == null) return false;
         
-        Task dependency = taskDAO.getById(dependencyId);
-        while (dependency != null && dependency.getDependencyId() != null) {
-            if (dependency.getDependencyId().equals(taskId)) {
+        // Check for direct circular dependency
+        if (taskId.equals(dependencyId)) return true;
+        
+        // Set to keep track of visited task IDs
+        Set<Integer> visited = new HashSet<>();
+        visited.add(taskId);
+        
+        // Check for indirect circular dependencies using DFS
+        return hasCircularDependency(dependencyId, visited);
+    }
+
+    private boolean hasCircularDependency(Integer currentTaskId, Set<Integer> visited) throws SQLException {
+        Task currentTask = taskDAO.getById(currentTaskId);
+        if (currentTask == null) return false;
+        
+        // Get all dependencies of current task
+        List<Task> dependencies = currentTask.getDependencies();
+        
+        for (Task dependency : dependencies) {
+            Integer dependencyId = dependency.getId();
+            
+            // If we've already visited this task, we found a cycle
+            if (visited.contains(dependencyId)) {
                 return true;
             }
-            dependency = taskDAO.getById(dependency.getDependencyId());
+            
+            // Add current task to visited set
+            visited.add(dependencyId);
+            
+            // Recursively check dependencies
+            if (hasCircularDependency(dependencyId, visited)) {
+                return true;
+            }
+            
+            // Remove current task from visited set when backtracking
+            visited.remove(dependencyId);
         }
+        
         return false;
     }
 
@@ -139,5 +170,12 @@ public class TaskManager {
 
     public List<Map<String, Object>> vectorSearchTasks(String query) throws SQLException {
         return vectorSearch.searchTasks(query);
+    }
+
+    public void setTaskDependency(int taskId, int dependsOnTaskId) throws SQLException {
+        if (taskId == dependsOnTaskId) {
+            throw new IllegalArgumentException("A task cannot depend on itself");
+        }
+        taskDAO.setTaskDependency(taskId, dependsOnTaskId);
     }
 }

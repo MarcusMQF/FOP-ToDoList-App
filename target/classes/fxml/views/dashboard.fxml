@@ -32,10 +32,10 @@
         <TableView fx:id="recentTasksTable" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="noColumn" text="No" prefWidth="40"/>
-                <TableColumn fx:id="titleColumn" text="Title" prefWidth="250"/>
-                <TableColumn fx:id="dueDateColumn" text="Due Date" prefWidth="120"/>
+                <TableColumn fx:id="titleColumn" text="Title" prefWidth="200"/>
+                <TableColumn fx:id="dueDateColumn" text="Due Date" prefWidth="80"/>
                 <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
-                <TableColumn fx:id="recurringColumn" text="Recurring" prefWidth="150"/>
+                <TableColumn fx:id="recurringColumn" text="Recurring" prefWidth="450"/>
                 <TableColumn fx:id="actionColumn" text="Actions" prefWidth="200"/>
             </columns>
         </TableView>
