@@ -38,13 +38,13 @@ A simple and intuitive Java-based ToDo application to help you manage your tasks
 ![RegisterPage](https://github.com/user-attachments/assets/9a88ccb1-1c4c-47de-94ed-88b178bb47a9)
 
 ### Dashboard
-![Dashboard](Dashboard.png)
+![Dashboard](demo/Dashboard.png)
 
 ### Task Management 
-![TaskManagement](TasksManagement.png)
+![TaskManagement](demo/TasksManagement.png)
 
 ### Data Analytics 
-![DataAnalytics](DataAnalytics.png)
+![DataAnalytics](demo/DataAnalytics.png)
 
 ---
 
