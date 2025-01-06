@@ -5,24 +5,55 @@ A simple and intuitive Java-based ToDo application to help you manage your tasks
 ---
 
 ## ✨ Features
-- **Task Management**: Add, edit, and delete tasks with ease.
-- **User Authentication**: Secure login and registration system.
-- **Responsive Design**: Works seamlessly on different screen sizes.
-- **Database Integration**: Uses SQLite for persistent data storage.
-- **Email Notification**: Remind user their tasks that due in 24 Hour
+
+- **📋 Task Management**
+  - Create, edit, and delete tasks
+  - Set task priorities and categories
+  - Task dependencies support
+  - Recurring tasks functionality
+
+- **🔒 User System**
+  - Secure authentication
+  - User-specific task management
+  - Profile customization
+
+- **📊 Analytics & Insights**
+  - Task completion statistics
+  - Category-wise distribution
+  - Progress tracking
+
+- **🔔 Smart Notifications**
+  - Due date reminders
+  - Email notifications for tasks due within 24 hours
+  - Dependency completion alerts
 
 ---
 
 ## 🔥 Application
 
-### Login Screen
+### Login
 ![LoginPage](https://github.com/user-attachments/assets/b90c6399-9040-478d-aa7a-cc7640cb612f)
 
-### Registration Screen
+### Registration 
 ![RegisterPage](https://github.com/user-attachments/assets/9a88ccb1-1c4c-47de-94ed-88b178bb47a9)
 
-### Task Management Screen
-![MainPage](https://github.com/user-attachments/assets/0c7928c8-f2a0-4f4b-af7d-d185236642af)
+### Dashboard
+![Dashboard](Dashboard.png)
+
+### Task Management 
+![TaskManagement](TasksManagement.png)
+
+### Data Analytics 
+![DataAnalytics](DataAnalytics.png)
+
+---
+
+## 🧰 Technical Requirements
+
+- Java 17 or later
+- JavaFX (included in distribution)
+- SQLite Database
+- Email service configuration
 
 ---
 
