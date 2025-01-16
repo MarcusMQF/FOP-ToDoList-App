@@ -9,13 +9,15 @@ A simple and intuitive Java-based ToDo application to help you manage your tasks
 - **📋 Task Management**
   - Create, edit, and delete tasks
   - Set task priorities and categories
+  - Sort tasks by due date, categories and priority
   - Task dependencies support
   - Recurring tasks functionality
 
 - **🔒 User System**
   - Secure authentication
   - User-specific task management
-  - Profile customization
+  - Password hashing for user accounts
+  - Log out and delete account
 
 - **📊 Analytics & Insights**
   - Task completion statistics
@@ -23,9 +25,8 @@ A simple and intuitive Java-based ToDo application to help you manage your tasks
   - Progress tracking
 
 - **🔔 Smart Notifications**
-  - Due date reminders
   - Email notifications for tasks due within 24 hours
-  - Dependency completion alerts
+  - Welcome email for new account registration
 
 ---
 
