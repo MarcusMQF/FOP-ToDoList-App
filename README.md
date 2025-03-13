@@ -1,8 +1,7 @@
 <div align="center">
   <img src="src/main/resources/images/todo-icon.png" alt="Todo App Icon" width="120" height="120" />
   <h1>TO-DO LIST APP</h1>
-  <p>A simple and intuitive Java-based ToDo application<br>
-  to help you manage your tasks efficiently.</p>
+  <p>A simple and intuitive Java-based ToDo application to help you manage your tasks efficiently.</p>
 
   [![Java][java-badge]][java-url]
   [![JavaFX][javafx-badge]][javafx-url]
