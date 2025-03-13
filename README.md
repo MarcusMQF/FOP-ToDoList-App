@@ -1,10 +1,14 @@
 # 📝 To-Do List App
 
-A simple and intuitive Java-based ToDo application to help you manage your tasks efficiently.
+<div align="center">
+  <img src="images/todo-icon.png" alt="Todo App Icon" width="120"/>
+  
+  A simple and intuitive Java-based ToDo application to help you manage your tasks efficiently.
+</div>
 
 ---
 
-## ✨ Features
+## Features
 
 - **📋 Task Management**
   - Create, edit, and delete tasks
@@ -30,26 +34,38 @@ A simple and intuitive Java-based ToDo application to help you manage your tasks
 
 ---
 
-## 🔥 Application
+## Application Showcase
 
-### Login
-![LoginPage](https://github.com/user-attachments/assets/b90c6399-9040-478d-aa7a-cc7640cb612f)
-
-### Registration 
-![RegisterPage](https://github.com/user-attachments/assets/9a88ccb1-1c4c-47de-94ed-88b178bb47a9)
-
-### Dashboard
-![Dashboard](demo/Dashboard.png)
-
-### Task Management 
-![TaskManagement](demo/TasksManagement.png)
-
-### Data Analytics 
-![DataAnalytics](demo/DataAnalytics.png)
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><b>Login</b></td>
+      <td align="center"><b>Registration</b></td>
+    </tr>
+    <tr>
+      <td><img src="https://github.com/user-attachments/assets/b90c6399-9040-478d-aa7a-cc7640cb612f" width="400"/></td>
+      <td><img src="https://github.com/user-attachments/assets/9a88ccb1-1c4c-47de-94ed-88b178bb47a9" width="400"/></td>
+    </tr>
+    <tr>
+      <td align="center"><b>Dashboard</b></td>
+      <td align="center"><b>Task Management</b></td>
+    </tr>
+    <tr>
+      <td><img src="demo/Dashboard.png" width="400"/></td>
+      <td><img src="demo/TasksManagement.png" width="400"/></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center"><b>Data Analytics</b></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center"><img src="demo/DataAnalytics.png" width="400"/></td>
+    </tr>
+  </table>
+</div>
 
 ---
 
-## 🧰 Technical Requirements
+## Technical Requirements
 
 - Java 17 or later
 - JavaFX (included in distribution)
@@ -58,7 +74,7 @@ A simple and intuitive Java-based ToDo application to help you manage your tasks
 
 ---
 
-## 🛠️ Installation
+## Installation
 
 ### Prerequisites
 - **Java Runtime Environment (JRE)**: Ensure you have Java 17 or later installed. Download it from [Adoptium](https://adoptium.net/).
@@ -70,7 +86,7 @@ A simple and intuitive Java-based ToDo application to help you manage your tasks
 
 ---
 
-## 🚀 Usage
+## Usage
 
 ### Running the Application
 1. Double-click the downloaded `.exe` file to launch the application.
@@ -78,12 +94,12 @@ A simple and intuitive Java-based ToDo application to help you manage your tasks
 3. Add, edit, or delete tasks as needed.
 
 ### Command Line (Optional)
-If you prefer to run the application from the command line:
 ```bash
 java --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml -jar ToDoApp.jar
 ```
+
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the [MIT License](LICENSE).
