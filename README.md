@@ -1,7 +1,7 @@
 # 📝 To-Do List App
 
 <div align="center">
-  <img src="images/todo-icon.png" alt="Todo App Icon" width="120"/>
+  <img src="C:\Users\User\Documents\Visual Studio Code\Java ToDo Application (FOP)\src\main\resources\images\todo-icon.png" alt="Todo App Icon" width="120"/>
   
   A simple and intuitive Java-based ToDo application to help you manage your tasks efficiently.
 </div>
