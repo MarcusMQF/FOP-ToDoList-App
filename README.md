@@ -1,36 +1,23 @@
-# 📝 To-Do List App
-
 <div align="center">
-  <img src="src/main/resources/images/todo-icon.png" alt="Todo App Icon" width="120"/>
-  
-  A simple and intuitive Java-based ToDo application to help you manage your tasks efficiently.
+  <img src="src/main/resources/images/todo-icon.png" alt="Todo App Icon" width="120" height="120" />
+  <h1>TO-DO LIST APP</h1>
+  <p>A simple and intuitive Java-based ToDo application<br>
+  to help you manage your tasks efficiently.</p>
+
+  [![Java][java-badge]][java-url]
+  [![JavaFX][javafx-badge]][javafx-url]
+  [![SQLite][sqlite-badge]][sqlite-url]
+  [![License][license-badge]][license-url]
 </div>
 
----
-
-## Features
-
-- **📋 Task Management**
-  - Create, edit, and delete tasks
-  - Set task priorities and categories
-  - Sort tasks by due date, categories and priority
-  - Task dependencies support
-  - Recurring tasks functionality
-
-- **🔒 User System**
-  - Secure authentication
-  - User-specific task management
-  - Password hashing for user accounts
-  - Log out and delete account
-
-- **📊 Analytics & Insights**
-  - Task completion statistics
-  - Category-wise distribution
-  - Progress tracking
-
-- **🔔 Smart Notifications**
-  - Email notifications for tasks due within 24 hours
-  - Welcome email for new account registration
+[java-badge]: https://img.shields.io/badge/Java-17+-orange.svg
+[java-url]: https://adoptium.net/
+[javafx-badge]: https://img.shields.io/badge/JavaFX-17+-blue.svg
+[javafx-url]: https://openjfx.io/
+[sqlite-badge]: https://img.shields.io/badge/SQLite-3-green.svg
+[sqlite-url]: https://www.sqlite.org/
+[license-badge]: https://img.shields.io/badge/License-MIT-yellow.svg
+[license-url]: ./LICENSE
 
 ---
 
@@ -62,6 +49,32 @@
     </tr>
   </table>
 </div>
+
+---
+
+## Features
+
+- **📋 Task Management**
+  - Create, edit, and delete tasks
+  - Set task priorities and categories
+  - Sort tasks by due date, categories and priority
+  - Task dependencies support
+  - Recurring tasks functionality
+
+- **🔒 User System**
+  - Secure authentication
+  - User-specific task management
+  - Password hashing for user accounts
+  - Log out and delete account
+
+- **📊 Analytics & Insights**
+  - Task completion statistics
+  - Category-wise distribution
+  - Progress tracking
+
+- **🔔 Smart Notifications**
+  - Email notifications for tasks due within 24 hours
+  - Welcome email for new account registration
 
 ---
 
